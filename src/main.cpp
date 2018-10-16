@@ -129,7 +129,7 @@ int App::Run(int argc, char* argv[])
             {
                 Tick();
                 m_frameTime += std::chrono::nanoseconds(133333333);
-                bEvent = false;
+                bEvent = SDL_PollEvent(&event);
             }
             else
                 bEvent = SDL_WaitEventTimeout(&event, wait.count() / 1000000);
