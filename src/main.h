@@ -7,9 +7,6 @@
 extern const char _binary_src_shader_vertex_glsl_end[];
 extern const char _binary_src_shader_vertex_glsl_start[];
 
-extern const char _binary_src_shader_geometry_glsl_end[];
-extern const char _binary_src_shader_geometry_glsl_start[];
-
 extern const char _binary_src_shader_fragment_glsl_end[];
 extern const char _binary_src_shader_fragment_glsl_start[];
 
@@ -20,7 +17,8 @@ private:
     SDL_GLContext m_pGlContext;
 
     GLuint m_iProgram;
-    GLuint m_iBuffer;
+    GLuint m_iBuffers[2];
+    bool m_bSwap;
     int m_iCellCount;
     bool m_bRun;
     std::chrono::steady_clock::time_point m_frameTime;
@@ -36,6 +34,7 @@ private:
     bool InitGl();
     void SetGlView();
     void Tick();
+    void SetBufferBase();
     void ToggleRun();
     bool Load();
     bool Save();

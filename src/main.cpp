@@ -6,7 +6,8 @@ App::App()
     : m_pWnd{nullptr}
     , m_pGlContext{nullptr}
     , m_iProgram{0}
-    , m_iBuffer{0}
+    , m_iBuffers{0, 0}
+    , m_bSwap{false}
     , m_iCellCount{0}
     , m_bRun{false}
     , m_frameTime{std::chrono::nanoseconds(0)}
@@ -31,7 +32,7 @@ SDL_Window* App::CreateWindow()
 	    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
         return nullptr;
 	return SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        400, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 }
 
 GLuint App::CreateShader()
@@ -52,16 +53,6 @@ GLuint App::CreateShader()
 		return -1;
 	glAttachShader(iProgram, VertexShaderID);
 
-	GLuint GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
-    char const * GeometrySourcePointer = _binary_src_shader_geometry_glsl_start;
-    GLint GeometrySourceLength = _binary_src_shader_geometry_glsl_end - _binary_src_shader_geometry_glsl_start;
-	glShaderSource(GeometryShaderID, 1, &GeometrySourcePointer, &GeometrySourceLength);
-	glCompileShader(GeometryShaderID);
-	glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
-	if (Result != GL_TRUE)
-		return -1;
-	glAttachShader(iProgram, GeometryShaderID);
-
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
     char const * FragmentSourcePointer = _binary_src_shader_fragment_glsl_start;
     GLint FragmentSourceLength = _binary_src_shader_fragment_glsl_end - _binary_src_shader_fragment_glsl_start;
@@ -78,11 +69,9 @@ GLuint App::CreateShader()
 		return 0;
 
 	glDetachShader(iProgram, VertexShaderID);
-	glDetachShader(iProgram, GeometryShaderID);
 	glDetachShader(iProgram, FragmentShaderID);
 	
 	glDeleteShader(VertexShaderID);
-	glDeleteShader(GeometryShaderID);
 	glDeleteShader(FragmentShaderID);
 
 	glUseProgram(iProgram);
@@ -99,6 +88,9 @@ bool App::InitGl()
 	if (VertexArray == 0)
 		return false;
 	glBindVertexArray(VertexArray);
+    glGenBuffers(2, m_iBuffers);
+	if (m_iBuffers[0] == 0 || m_iBuffers[1] == 0)
+		return false;
     return true;
 }
 
@@ -124,8 +116,15 @@ int App::Run(int argc, char* argv[])
         int bEvent;
         if (m_bRun)
         {
-             Tick();
-            bEvent = SDL_WaitEventTimeout(&event, 333);
+            auto wait = m_frameTime - std::chrono::steady_clock::now();
+            if (wait.count() < 0)
+            {
+                Tick();
+                m_frameTime += std::chrono::nanoseconds(133333333);
+                bEvent = false;
+            }
+            else
+                bEvent = SDL_WaitEventTimeout(&event, wait.count() / 1000000);
         }
         else
             bEvent = SDL_WaitEvent(&event);
@@ -164,22 +163,30 @@ int App::Run(int argc, char* argv[])
                 }    
             }
         }
-    }
+    } 
     return 0;
 }
 
 void App::Tick()
 {
+    if (m_bRun)
+        m_bSwap = !m_bSwap;
+    SetBufferBase();
     glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_POINTS, 0, m_iCellCount);
     glFinish();
     SDL_GL_SwapWindow(m_pWnd);
 }
 
+void App::SetBufferBase()
+{
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
+}
+
 void App::ToggleRun()
 {
     m_bRun = !m_bRun;
-    glUniform1i(glGetUniformLocation(m_iProgram, "run"), m_bRun);
     if (m_bRun)
         m_frameTime = std::chrono::steady_clock::now();
 }
@@ -209,10 +216,14 @@ bool App::Load()
             img >> vCell[y * iWidth + x];
         }
     }
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[0]);
     glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
-        vCell.data(), GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_iBuffer);
+        vCell.data(), GL_DYNAMIC_COPY);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[1]);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
+        nullptr, GL_DYNAMIC_COPY);
+
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
     glUniform1i(glGetUniformLocation(m_iProgram, "width"), iWidth);
