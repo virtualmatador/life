@@ -9,7 +9,7 @@ COMMA = ,
 .PHONY: clean, install, uninstall
 
 $(TARGET): $(OBJECTS) $(SHADERS)
-	$(CC) -o $@ $(OBJECTS) $(LIBS) -Wl,--format=binary $(addprefix -Wl$(COMMA), $(SHADERS)) -Wl,--format=default
+	$(CC) -o $@ $(OBJECTS) $(LIBS) -no-pie -Wl,--format=binary $(addprefix -Wl$(COMMA), $(SHADERS)) -Wl,--format=default
 
 clean:
 	$(RM) -r build/
