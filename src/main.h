@@ -19,9 +19,14 @@ private:
     GLuint m_iProgram;
     GLuint m_iBuffers[2];
     bool m_bSwap;
-    int m_iCellCount;
     bool m_bRun;
     std::chrono::steady_clock::time_point m_frameTime;
+
+    int m_iCx;
+    int m_iCy;
+    int m_iWidth;
+    int m_iHeight;
+
 
 public:
     App();
@@ -33,6 +38,7 @@ private:
     GLuint CreateShader();
     bool InitGl();
     void SetGlView();
+    void SetPointSize();
     void Tick();
     void SetBufferBase();
     void ToggleRun();

@@ -8,9 +8,12 @@ App::App()
     , m_iProgram{0}
     , m_iBuffers{0, 0}
     , m_bSwap{false}
-    , m_iCellCount{0}
     , m_bRun{false}
     , m_frameTime{std::chrono::nanoseconds(0)}
+    , m_iCx{0}
+    , m_iCy{0}
+    , m_iWidth{0}
+    , m_iHeight{0}
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
         throw "SDL_INIT";
@@ -81,7 +84,6 @@ GLuint App::CreateShader()
 bool App::InitGl()
 {
 	glDisable(GL_PROGRAM_POINT_SIZE);
-	glPointSize(8);
     SetGlView();
     GLuint VertexArray;
     glGenVertexArrays(1, &VertexArray);
@@ -96,9 +98,15 @@ bool App::InitGl()
 
 void App::SetGlView()
 {
-    int w, h;
-    SDL_GetWindowSize(m_pWnd, &w, &h);
-	glViewport( 0, 0, w, h);
+    SDL_GetWindowSize(m_pWnd, &m_iCx, &m_iCy);
+	glViewport( 0, 0, m_iCx, m_iCy);
+    SetPointSize();
+}
+
+void App::SetPointSize()
+{
+    if (m_iWidth * m_iHeight > 0)
+    	glPointSize(std::min(m_iCx / (m_iWidth + 2) * 0.75, m_iCy / (m_iHeight + 2) * 0.75));
 }
 
 App::~App()
@@ -135,7 +143,7 @@ int App::Run(int argc, char* argv[])
             else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
             {
                 SetGlView();
-                if (m_bRun == false && m_iCellCount > 0)
+                if (m_bRun == false && m_iWidth * m_iHeight > 0)
                     Tick();
             }
             else if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
@@ -173,7 +181,7 @@ void App::Tick()
         m_bSwap = !m_bSwap;
     SetBufferBase();
     glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_POINTS, 0, m_iCellCount);
+    glDrawArrays(GL_POINTS, 0, m_iWidth * m_iHeight);
     glFinish();
     SDL_GL_SwapWindow(m_pWnd);
 }
@@ -226,9 +234,11 @@ bool App::Load()
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-    glUniform1i(glGetUniformLocation(m_iProgram, "width"), iWidth);
-    glUniform1i(glGetUniformLocation(m_iProgram, "height"), iHeight);
-    m_iCellCount = iWidth * iHeight;
+    m_iWidth = iWidth;
+    m_iHeight = iHeight;
+    glUniform1i(glGetUniformLocation(m_iProgram, "width"), m_iWidth);
+    glUniform1i(glGetUniformLocation(m_iProgram, "height"), m_iHeight);
+    SetPointSize();
     return true;
 }
 
