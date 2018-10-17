@@ -234,6 +234,7 @@ bool Life::Load()
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+    m_bSwap = false;
     m_iWidth = iWidth;
     m_iHeight = iHeight;
     glUniform1i(glGetUniformLocation(m_iProgram, "width"), m_iWidth);
