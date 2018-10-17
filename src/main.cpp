@@ -1,4 +1,6 @@
 #include "main.h"
+#include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 
@@ -15,6 +17,7 @@ Life::Life()
     , m_iCy{0}
     , m_iWidth{0}
     , m_iHeight{0}
+    , m_iDelay{33333333}
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
         throw "SDL_INIT";
@@ -136,7 +139,7 @@ int Life::Run(int argc, char* argv[])
             if (wait.count() < 0)
             {
                 Tick();
-                m_frameTime += std::chrono::nanoseconds(133333333);
+                m_frameTime += std::chrono::nanoseconds(std::max(m_iDelay, -wait.count()));
                 bEvent = SDL_PollEvent(&event);
             }
             else
@@ -158,7 +161,9 @@ int Life::Run(int argc, char* argv[])
             {
                 if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                 {
-                    ToggleRun();
+                    m_bRun = !m_bRun;
+                    if (m_bRun)
+                        m_frameTime = std::chrono::steady_clock::now();
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_L)
                 {
@@ -177,6 +182,24 @@ int Life::Run(int argc, char* argv[])
                         }
                     }
                 }    
+                else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+                {
+                    if (m_bRun)
+                    {
+                        m_frameTime -= std::chrono::nanoseconds(m_iDelay);
+                        m_iDelay = m_iDelay * 8 / 10;
+                        m_frameTime += std::chrono::nanoseconds(m_iDelay);
+                    }
+                }    
+                else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+                {
+                    if (m_bRun && m_iDelay < 100000000000)
+                    {
+                        m_frameTime -= std::chrono::nanoseconds(m_iDelay);
+                        m_iDelay = (m_iDelay + 1) * 10 / 8;
+                        m_frameTime += std::chrono::nanoseconds(m_iDelay);
+                    }
+                }    
             }
         }
     } 
@@ -185,26 +208,40 @@ int Life::Run(int argc, char* argv[])
 
 void Life::Tick()
 {
+    static std::chrono::steady_clock::time_point RefreshTime(std::chrono::nanoseconds(0));
+    static int64_t FrameCount = 0;
+    ++FrameCount;
+    int64_t duration = (m_frameTime - RefreshTime).count();
+    bool bRasterize;
     if (m_bRun)
+    {
         m_bSwap = !m_bSwap;
+        bRasterize = duration > 50000000;
+    }
+    else
+        bRasterize = true;
     SetBufferBase();
+    if (bRasterize)
+        glDisable(GL_RASTERIZER_DISCARD);
+    else
+        glEnable(GL_RASTERIZER_DISCARD);
     glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_POINTS, 0, m_iWidth * m_iHeight);
     glFinish();
-    SDL_GL_SwapWindow(m_pWnd);
+    if (bRasterize)
+    {
+        if (duration > 0)
+            std::cout << "Delay = " << std::setw(12) << m_iDelay << ", Fps = " << std::setw(8) << FrameCount * 1000000000 / duration << " " << "\e[A" << std::endl;
+        FrameCount = 0;
+        RefreshTime = m_frameTime;
+        SDL_GL_SwapWindow(m_pWnd);
+    }
 }
 
 void Life::SetBufferBase()
 {
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
-}
-
-void Life::ToggleRun()
-{
-    m_bRun = !m_bRun;
-    if (m_bRun)
-        m_frameTime = std::chrono::steady_clock::now();
 }
 
 bool Life::Load()

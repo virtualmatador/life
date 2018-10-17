@@ -27,7 +27,7 @@ private:
     int m_iCy;
     int m_iWidth;
     int m_iHeight;
-
+    int64_t m_iDelay;
 
 public:
     Life();
@@ -42,7 +42,6 @@ private:
     void SetPointSize();
     void Tick();
     void SetBufferBase();
-    void ToggleRun();
     bool Load();
     bool Save();
     std::string GetFileName();
