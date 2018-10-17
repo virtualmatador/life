@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 
-App::App()
+Life::Life()
     : m_pWnd{nullptr}
     , m_pGlContext{nullptr}
     , m_iProgram{0}
@@ -27,7 +27,7 @@ App::App()
         throw "InitGl";
 }
 
-SDL_Window* App::CreateWindow()
+SDL_Window* Life::CreateWindow()
 {
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0 ||
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5) < 0 ||
@@ -38,7 +38,7 @@ SDL_Window* App::CreateWindow()
         800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 }
 
-GLuint App::CreateShader()
+GLuint Life::CreateShader()
 {
     int iProgram = glCreateProgram();
 	if (iProgram == 0)
@@ -81,7 +81,7 @@ GLuint App::CreateShader()
 	return iProgram;
 }
 
-bool App::InitGl()
+bool Life::InitGl()
 {
 	glDisable(GL_PROGRAM_POINT_SIZE);
     SetGlView();
@@ -96,27 +96,27 @@ bool App::InitGl()
     return true;
 }
 
-void App::SetGlView()
+void Life::SetGlView()
 {
     SDL_GetWindowSize(m_pWnd, &m_iCx, &m_iCy);
 	glViewport( 0, 0, m_iCx, m_iCy);
     SetPointSize();
 }
 
-void App::SetPointSize()
+void Life::SetPointSize()
 {
     if (m_iWidth * m_iHeight > 0)
     	glPointSize(std::min(m_iCx / (m_iWidth + 2) * 0.75, m_iCy / (m_iHeight + 2) * 0.75));
 }
 
-App::~App()
+Life::~Life()
 {
     SDL_GL_DeleteContext(m_pGlContext);
 	SDL_DestroyWindow(m_pWnd);
 	SDL_Quit();
 }
 
-int App::Run(int argc, char* argv[])
+int Life::Run(int argc, char* argv[])
 {
     for(;;)
     {
@@ -175,7 +175,7 @@ int App::Run(int argc, char* argv[])
     return 0;
 }
 
-void App::Tick()
+void Life::Tick()
 {
     if (m_bRun)
         m_bSwap = !m_bSwap;
@@ -186,20 +186,20 @@ void App::Tick()
     SDL_GL_SwapWindow(m_pWnd);
 }
 
-void App::SetBufferBase()
+void Life::SetBufferBase()
 {
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
 }
 
-void App::ToggleRun()
+void Life::ToggleRun()
 {
     m_bRun = !m_bRun;
     if (m_bRun)
         m_frameTime = std::chrono::steady_clock::now();
 }
 
-bool App::Load()
+bool Life::Load()
 {
     std::ifstream img(GetFileName());
     char sign[3] = {0};
@@ -242,13 +242,13 @@ bool App::Load()
     return true;
 }
 
-bool App::Save()
+bool Life::Save()
 {
     std::ofstream img(GetFileName());
     return true;
 }
 
-std::string App::GetFileName()
+std::string Life::GetFileName()
 {
     char file[1024];
 	FILE *f = popen("zenity --file-selection", "r");
@@ -258,9 +258,8 @@ std::string App::GetFileName()
     return file;
 }
 
-
 int main(int argc, char* argv[])
 {
-    App app;
-    return app.Run(argc, argv);
+    Life life;
+    return life.Run(argc, argv);
 }

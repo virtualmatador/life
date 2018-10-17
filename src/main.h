@@ -10,7 +10,7 @@ extern const char _binary_src_shader_vertex_glsl_start[];
 extern const char _binary_src_shader_fragment_glsl_end[];
 extern const char _binary_src_shader_fragment_glsl_start[];
 
-class App
+class Life
 {
 private:
     SDL_Window* m_pWnd;
@@ -29,8 +29,8 @@ private:
 
 
 public:
-    App();
-    ~App();
+    Life();
+    ~Life();
     int Run(int argc, char* argv[]);
 
 private:
