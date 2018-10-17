@@ -29,6 +29,7 @@ Life::Life()
         throw "CreateGlProgram";
 	if(!InitGl())
         throw "InitGl";
+    Tick();
 }
 
 SDL_Window* Life::CreateWindow()
@@ -154,7 +155,7 @@ int Life::Run(int argc, char* argv[])
             else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
             {
                 SetGlView();
-                if (m_bRun == false && m_iWidth * m_iHeight > 0)
+                if (m_bRun == false)
                     Tick();
             }
             else if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
