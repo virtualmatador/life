@@ -17,6 +17,7 @@ private:
     SDL_GLContext m_pGlContext;
 
     GLuint m_iProgram;
+    GLuint m_iVertexArray;
     GLuint m_iBuffers[2];
     bool m_bSwap;
     bool m_bRun;
@@ -45,4 +46,5 @@ private:
     bool Load();
     bool Save();
     std::string GetFileName();
+    void QuitGl();
 };

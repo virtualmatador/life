@@ -6,6 +6,7 @@ Life::Life()
     : m_pWnd{nullptr}
     , m_pGlContext{nullptr}
     , m_iProgram{0}
+    , m_iVertexArray{0}
     , m_iBuffers{0, 0}
     , m_bSwap{false}
     , m_bRun{false}
@@ -85,11 +86,10 @@ bool Life::InitGl()
 {
 	glDisable(GL_PROGRAM_POINT_SIZE);
     SetGlView();
-    GLuint VertexArray;
-    glGenVertexArrays(1, &VertexArray);
-	if (VertexArray == 0)
+    glGenVertexArrays(1, &m_iVertexArray);
+	if (m_iVertexArray == 0)
 		return false;
-	glBindVertexArray(VertexArray);
+	glBindVertexArray(m_iVertexArray);
     glGenBuffers(2, m_iBuffers);
 	if (m_iBuffers[0] == 0 || m_iBuffers[1] == 0)
 		return false;
@@ -111,9 +111,17 @@ void Life::SetPointSize()
 
 Life::~Life()
 {
+    QuitGl();
     SDL_GL_DeleteContext(m_pGlContext);
 	SDL_DestroyWindow(m_pWnd);
 	SDL_Quit();
+}
+
+void Life::QuitGl()
+{
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &m_iVertexArray);
+    glDeleteBuffers(2, m_iBuffers);
 }
 
 int Life::Run(int argc, char* argv[])
