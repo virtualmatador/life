@@ -119,6 +119,7 @@ Life::~Life()
     SDL_GL_DeleteContext(m_pGlContext);
 	SDL_DestroyWindow(m_pWnd);
 	SDL_Quit();
+    std::cout << std::endl;
 }
 
 void Life::QuitGl()
@@ -203,7 +204,7 @@ int Life::Run(int argc, char* argv[])
                 }    
             }
         }
-    } 
+    }
     return 0;
 }
 
@@ -298,7 +299,7 @@ bool Life::Save()
 std::string Life::GetFileName()
 {
     char file[1024];
-	FILE *f = popen("zenity --file-selection", "r");
+	FILE *f = popen("zenity --file-selection  2>/dev/null", "r");
 	fgets(file, 1024, f);
 	pclose(f);
 	file[strlen(file) - 1] = 0;
