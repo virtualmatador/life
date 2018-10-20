@@ -161,7 +161,18 @@ int Life::Run(int argc, char* argv[])
             }
             else if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
             {
-                if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
+                if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
+                {
+                    if (!m_bRun)
+                    {
+                        m_frameTime = std::chrono::steady_clock::now();
+                        m_bRun = true;
+                    }
+                    Tick();
+                    m_bRun = false;
+                    Tick();
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                 {
                     m_bRun = !m_bRun;
                     if (m_bRun)
