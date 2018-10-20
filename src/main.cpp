@@ -319,6 +319,15 @@ std::string Life::GetFileName()
 
 int main(int argc, char* argv[])
 {
-    Life life;
-    return life.Run(argc, argv);
+    try
+    {
+        Life life;
+        life.Run(argc, argv);
+    }
+    catch(const char* szE)
+    {
+        std::cout << "Exception: " << szE << std::endl;
+        return -1;
+    }
+    return 0;
 }
