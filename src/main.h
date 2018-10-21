@@ -44,6 +44,6 @@ private:
     void SetBufferBase();
     bool Load();
     bool Save();
-    std::string GetFileName();
+    std::string GetFileName(bool bSave);
     void QuitGl();
 };

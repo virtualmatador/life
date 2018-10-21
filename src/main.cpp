@@ -1,4 +1,5 @@
 #include "main.h"
+#include "file-dialog.h"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -182,17 +183,16 @@ int Life::Run(int argc, char* argv[])
                 {
                     if (!m_bRun)
                     {
-                        if (Load())
-                            Tick();
+                        Load();
+                        Tick();
                     }
                 }    
                 else if (event.key.keysym.scancode == SDL_SCANCODE_S)
                 {
                     if (!m_bRun)
                     {
-                        if (Save())
-                        {
-                        }
+                        Save();
+                        Tick();
                     }
                 }    
                 else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
@@ -259,7 +259,7 @@ void Life::SetBufferBase()
 
 bool Life::Load()
 {
-    std::ifstream img(GetFileName());
+    std::ifstream img(GetFileName(false));
     char sign[3] = {0};
     if (img)
         img >> sign[0] >> sign[1];
@@ -303,18 +303,16 @@ bool Life::Load()
 
 bool Life::Save()
 {
-    std::ofstream img(GetFileName());
+    std::ofstream img(GetFileName(true));
     return true;
 }
 
-std::string Life::GetFileName()
+std::string Life::GetFileName(bool bSave)
 {
-    char file[1024];
-	FILE *f = popen("zenity --file-selection  2>/dev/null", "r");
-	fgets(file, 1024, f);
-	pclose(f);
-	file[strlen(file) - 1] = 0;
-    return file;
+    SDL_HideWindow(m_pWnd);
+    std::string sName = GetOpenFileName(bSave);
+    SDL_ShowWindow(m_pWnd);
+    return sName;
 }
 
 int main(int argc, char* argv[])
