@@ -13,7 +13,7 @@ $(TARGET): $(OBJECTS) $(SHADERS)
 
 clean:
 	$(RM) -r build/
-	$(RM) -r life
+	$(RM) -r $(TARGET)
 
 install:
 
