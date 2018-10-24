@@ -219,14 +219,12 @@ Menu::Menu(SDL_Window* pWnd)
 	, m_iFontBuffer{0}
 	, m_iTextBuffer{0}
 	, m_iCharCount{0}
-	, m_Speed{"Hello", 0, 0, 0.001, {1.0, 0, 0}}
+	, m_Speed{"Hello", 0, 0, 0.05, {1.0, 0, 0}}
 {
-	glDisable(GL_PROGRAM_POINT_SIZE);
 	glGenVertexArrays(1, &m_iVertexArray);
 	if (m_iVertexArray == 0)
 		throw "glGenVertexArrays";
 	glBindVertexArray(m_iVertexArray);
-	glPointSize(200);
 	glGenBuffers(1, &m_iFontBuffer);
 	if (m_iFontBuffer == 0)
 		throw "glGenBuffers";
@@ -234,10 +232,10 @@ Menu::Menu(SDL_Window* pWnd)
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Menu::m_arFont),
 		Menu::m_arFont, GL_STATIC_COPY);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
 	glGenBuffers(1, &m_iTextBuffer);
 	if (m_iTextBuffer == 0)
 		throw "glGenBuffers";
+	UploadTexts();
 }
 
 Menu::~Menu()
@@ -257,10 +255,17 @@ void Menu::UploadTexts()
 	std::vector<unsigned char> vData(m_iCharCount * 6 * sizeof(GLfloat));
 	arData.read((char*)vData.data(), vData.size());
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iTextBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, vData.size(),
-		vData.data(), GL_DYNAMIC_COPY);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_iTextBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vData.size(),
+		vData.data(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	int stride = 5 * sizeof(GLfloat) + sizeof(GLint);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0);
+	glVertexAttribIPointer(1, 1, GL_INT, stride, (void*)(2 * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLfloat) + sizeof(GLint)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Menu::UploadText(TEXT & txt, std::stringstream & stream)
@@ -269,8 +274,9 @@ void Menu::UploadText(TEXT & txt, std::stringstream & stream)
 	{
 		float fData = txt.fX + i * txt.fScalse;
 		stream.write((char*)&fData, sizeof(GLfloat));
-		stream.write((char*)&(txt.fY), sizeof(GLfloat));
-		stream.write((char*)&(txt.text[i]), sizeof(GLfloat));
+		stream.write((char*)&txt.fY, sizeof(GLfloat));
+		int iData = txt.text[i];
+		stream.write((char*)&iData, sizeof(GLint));
 		stream.write((char*)txt.fColor, sizeof(GLfloat) * 3);
 	}
 	m_iCharCount += txt.text.size();
@@ -279,7 +285,7 @@ void Menu::UploadText(TEXT & txt, std::stringstream & stream)
 void Menu::Tick(int64_t iRealSpeed, int64_t iNominalSpeed)
 {
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
-	glDrawArrays(GL_POINTS, 0, 1);
+	glDrawArrays(GL_POINTS, 0, m_iCharCount);
 	glFinish();
 }
 
