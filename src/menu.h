@@ -29,7 +29,7 @@ private:
 	GLuint m_iFontBuffer;
 	GLuint m_iTextBuffer;
 
-	static const int m_arFont[][8][2];
+	static const float m_arFont[][8][2];
 	int m_iCharCount;
 	TEXT m_Speed;
 
