@@ -34,25 +34,47 @@ Context<T>::Context(SDL_Window* pWnd)
 
 	GLint Result = GL_FALSE;
 
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	char const * VertexSourcePointer = ((T*)this)->GetVertexStart();
 	GLint VertexSourceLength = ((T*)this)->GetVertexEnd() - VertexSourcePointer;
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, &VertexSourceLength);
-	glCompileShader(VertexShaderID);
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	if (Result != GL_TRUE)
-		throw "glCompileShader";
-	glAttachShader(m_iProgram, VertexShaderID);
+	GLuint VertexShaderID = 0;
+	if (VertexSourceLength > 0)
+	{
+		VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(VertexShaderID, 1, &VertexSourcePointer, &VertexSourceLength);
+		glCompileShader(VertexShaderID);
+		glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+		if (Result != GL_TRUE)
+			throw "glCompileShader";
+		glAttachShader(m_iProgram, VertexShaderID);
+	}
 
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	char const * GeometrySourcePointer = ((T*)this)->GetGeometryStart();
+	GLint GeometrySourceLength = ((T*)this)->GetGeometryEnd() - GeometrySourcePointer;
+	GLuint GeometryShaderID = 0;
+	if (GeometrySourceLength > 0)
+	{
+		GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(GeometryShaderID, 1, &GeometrySourcePointer, &GeometrySourceLength);
+		glCompileShader(GeometryShaderID);
+		glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
+		if (Result != GL_TRUE)
+			throw "glCompileShader";
+		glAttachShader(m_iProgram, GeometryShaderID);
+	}
+
 	char const * FragmentSourcePointer = ((T*)this)->GetFragmentStart();
 	GLint FragmentSourceLength = ((T*)this)->GetFragmentEnd() - FragmentSourcePointer;
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, &FragmentSourceLength);
-	glCompileShader(FragmentShaderID);
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	if (Result != GL_TRUE)
-		throw "glCompileShader";
-	glAttachShader(m_iProgram, FragmentShaderID);
+	GLuint FragmentShaderID = 0;
+	if (FragmentSourceLength > 0)
+	{
+		FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, &FragmentSourceLength);
+		glCompileShader(FragmentShaderID);
+		glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
+		if (Result != GL_TRUE)
+			throw "glCompileShader";
+		glAttachShader(m_iProgram, FragmentShaderID);
+	}
 
 	glLinkProgram(m_iProgram);
 	glGetProgramiv(m_iProgram, GL_LINK_STATUS, &Result);

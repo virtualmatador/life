@@ -125,6 +125,16 @@ const char* Game::GetVertexEnd()
 	return _binary_src_shader_game_vertex_glsl_end;
 }
 
+const char* Game::GetGeometryStart()
+{
+	return _binary_src_shader_game_geometry_glsl_start;
+}
+
+const char* Game::GetGeometryEnd()
+{
+	return _binary_src_shader_game_geometry_glsl_end;
+}
+
 const char* Game::GetFragmentStart()
 {
 	return _binary_src_shader_game_fragment_glsl_start;

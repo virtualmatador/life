@@ -7,6 +7,9 @@
 extern const char _binary_src_shader_game_vertex_glsl_end[];
 extern const char _binary_src_shader_game_vertex_glsl_start[];
 
+extern const char _binary_src_shader_game_geometry_glsl_end[];
+extern const char _binary_src_shader_game_geometry_glsl_start[];
+
 extern const char _binary_src_shader_game_fragment_glsl_end[];
 extern const char _binary_src_shader_game_fragment_glsl_start[];
 
@@ -30,6 +33,8 @@ public:
 	void Tick(bool bRun, bool bRasterize);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
+	const char* GetGeometryStart();
+	const char* GetGeometryEnd();
 	const char* GetFragmentStart();
 	const char* GetFragmentEnd();
 

@@ -299,6 +299,16 @@ const char* Menu::GetVertexEnd()
 	return _binary_src_shader_menu_vertex_glsl_end;
 }
 
+const char* Menu::GetGeometryStart()
+{
+	return _binary_src_shader_menu_geometry_glsl_start;
+}
+
+const char* Menu::GetGeometryEnd()
+{
+	return _binary_src_shader_menu_geometry_glsl_end;
+}
+
 const char* Menu::GetFragmentStart()
 {
 	return _binary_src_shader_menu_fragment_glsl_start;
