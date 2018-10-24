@@ -151,26 +151,37 @@ void Life::OnResize()
 	m_pMenu->SetWindowSize();
 	m_pGame->SetWindowSize();
 	m_pGame->SetPointSize();
+	bool bRun = m_bRun;
+	m_bRun = false;
+	Tick();
+	m_bRun = bRun;
 	if (!m_bRun)
 		Tick();
 }
 
 void Life::Tick()
 {
-	static std::chrono::steady_clock::time_point RefreshTime(std::chrono::nanoseconds(0));
+	static std::chrono::steady_clock::time_point GameUpdate(std::chrono::nanoseconds(0));
+	static std::chrono::steady_clock::time_point MenuUpdate(std::chrono::nanoseconds(0));
 	static int64_t FrameCount = 0;
 	FrameCount += m_bRun;
-	int64_t duration = (m_frameTime - RefreshTime).count();
-	bool bRasterize = !m_bRun || duration > (50ll * 1000ll * 1000ll);
-	m_pGame->Tick(m_bRun, bRasterize);
-	if (bRasterize)
+	int64_t duration = (m_frameTime - GameUpdate).count();
+	bool bUpdateGame = !m_bRun || duration > (50ll * 1000ll * 1000ll);
+	m_pGame->Tick(bUpdateGame, m_bRun);
+	if (bUpdateGame)
 	{
-		m_pMenu->Tick(
-			(duration > 0 ? FrameCount * (1000ll * 1000ll * 1000ll) / duration : 0ll),
-			(m_iDelay > 0 ? (1000ll * 1000ll * 1000ll) / m_iDelay : 0ll));
-		FrameCount = 0;
-		RefreshTime = m_frameTime;
+		static int64_t iSpeed = 0;
+		int64_t duration = (m_frameTime - MenuUpdate).count();
+		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll * 1000ll);
+		if (bUpdateMenu)
+		{
+			iSpeed = FrameCount == 0 ? 0 : FrameCount * (1000ll * 1000ll * 1000ll) / duration;
+			FrameCount = 0;
+			MenuUpdate = m_frameTime;
+		}
+		m_pMenu->Tick(bUpdateMenu, iSpeed , m_iDelay > 0 ? (1000ll * 1000ll * 1000ll) / m_iDelay : 0ll);
 		SDL_GL_SwapWindow(m_pWnd);
+		GameUpdate = m_frameTime;
 	}
 }
 

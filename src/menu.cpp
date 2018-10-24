@@ -273,13 +273,16 @@ void Menu::UploadText(TEXT & txt, std::stringstream & stream)
 	m_iCharCount += txt.text.size();
 }
 
-void Menu::Tick(int64_t iRealSpeed, int64_t iNominalSpeed)
+void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
 {
-	std::stringstream ss;
-	ss << "SPEED: " << std::setw(7) << iRealSpeed << " EXPECT: " << std::setw(10) << iNominalSpeed;
-	m_Speed.text = ss.str();
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
-	UploadTexts();
+	if (bUpdate)
+	{
+		std::stringstream ss;
+		ss << "SPEED: " << std::setw(7) << iRealSpeed << " EXPECT: " << std::setw(10) << iNominalSpeed;
+		m_Speed.text = ss.str();
+		UploadTexts();
+	}
 	glDrawArrays(GL_POINTS, 0, m_iCharCount);
 	glFinish();
 }

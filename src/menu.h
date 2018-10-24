@@ -38,7 +38,7 @@ public:
 	~Menu();
 
 	void UploadTexts();
-	void Tick(int64_t iRealSpeed, int64_t iNominalSpeed);
+	void Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();

@@ -99,14 +99,14 @@ void Game::SetPointSize()
 	glPointSize(std::min(0.75 * iWidth / m_iCx, 0.75 * iHeight / m_iCy));
 }
 
-void Game::Tick(bool bRun, bool bRasterize)
+void Game::Tick(bool bUpdate, bool bRun)
 {
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
 	if (bRun)
 		m_bSwap = !m_bSwap;
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
-	if (bRasterize)
+	if (bUpdate)
 		glDisable(GL_RASTERIZER_DISCARD);
 	else
 		glEnable(GL_RASTERIZER_DISCARD);

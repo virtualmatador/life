@@ -30,7 +30,7 @@ public:
 	void SetPointSize();
 	bool Load();
 	bool Save();
-	void Tick(bool bRun, bool bRasterize);
+	void Tick(bool bUpdate, bool bRun);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();
