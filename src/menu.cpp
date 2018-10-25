@@ -206,6 +206,8 @@ Menu::Menu(Life* pApp)
 	, m_iFontBuffer{0}
 	, m_iTextBuffer{0}
 	, m_iCharCount{0}
+	, m_MenuUpdate{std::chrono::nanoseconds(0)}
+	, m_dSpeed{0.0}
 {
 	glGenVertexArrays(1, &m_iVertexArray);
 	if (m_iVertexArray == 0)
@@ -222,6 +224,18 @@ Menu::Menu(Life* pApp)
 	glGenBuffers(1, &m_iTextBuffer);
 	if (m_iTextBuffer == 0)
 		throw "glGenBuffers";
+	glBindBuffer(GL_ARRAY_BUFFER, m_iTextBuffer);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	int stride = 6 * sizeof(GLfloat) + sizeof(GLint);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0);
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLfloat)));
+	glVertexAttribIPointer(2, 1, GL_INT, stride, (void*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat) + sizeof(GLint)));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	glLineWidth(2);
 
 	m_pRealSpeed = m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 0.04})->GetText();
@@ -252,45 +266,46 @@ SDL_Window* Menu::GetWindow()
 
 void Menu::UploadTexts()
 {
+	RefreshTexts();
 	m_iCharCount = 0;
 	std::stringstream arData(std::ios::in | std::ios::out | std::ios::binary);
 	for (auto & cnt : m_lstControl)
 		m_iCharCount += cnt.Write(arData);
 	arData.seekg(0, std::ios::beg);
-	std::vector<unsigned char> vData(m_iCharCount * 7 * sizeof(GLfloat));
+	std::vector<unsigned char> vData(m_iCharCount * (6 * sizeof(GLfloat) + sizeof(GLint)));
 	arData.read((char*)vData.data(), vData.size());
 	glBindBuffer(GL_ARRAY_BUFFER, m_iTextBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vData.size(),
 		vData.data(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	int stride = 6 * sizeof(GLfloat) + sizeof(GLint);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLfloat)));
-	glVertexAttribIPointer(2, 1, GL_INT, stride, (void*)(3 * sizeof(GLfloat)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat) + sizeof(GLint)));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Menu::Tick(bool bUpdate, double dRealSpeed, double dNominalSpeed)
+void Menu::RefreshTexts()
 {
+	{
+		std::stringstream ss;
+		ss << "SPEED:" << m_dSpeed;
+		*m_pRealSpeed = ss.str();
+	}
+	{
+		std::stringstream ss;
+		ss << "EXPECT:" << (m_pApp->m_iDelay > 0ll ? double(1000.0 * 1000.0) / m_pApp->m_iDelay : 0ll);
+		*m_pNominalSpeed = ss.str();
+	}
+}
+bool Menu::Tick()
+{
+	int64_t duration = (m_pApp->m_frameTime - m_MenuUpdate).count() / 1000ll;
+	bool bUpdate = !m_pApp->m_bRun || duration > (500ll * 1000ll);
+	if (bUpdate && m_pApp->m_bRun)
+	{
+		m_MenuUpdate = m_pApp->m_frameTime;
+		m_dSpeed = m_pApp->m_FrameCount == 0 ? 0 : double(m_pApp->m_FrameCount) * (1000.0 * 1000.0) / duration;
+		m_pApp->m_FrameCount = 0;
+	}
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	if (bUpdate)
-	{
-		{
-			std::stringstream ss;
-			ss << "SPEED:" << dRealSpeed;
-			*m_pRealSpeed = ss.str();
-		}
-		{
-			std::stringstream ss;
-			ss << "EXPECT:" << dNominalSpeed;
-			*m_pNominalSpeed = ss.str();
-		}
 		UploadTexts();
-	}
 	glDrawArrays(GL_POINTS, 0, m_iCharCount);
 	glFinish();
 }

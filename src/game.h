@@ -3,6 +3,7 @@
 #include "context.hpp"
 
 #include <string>
+#include <chrono>
 
 extern const char _binary_src_shader_game_vertex_glsl_end[];
 extern const char _binary_src_shader_game_vertex_glsl_start[];
@@ -18,7 +19,9 @@ class Game: public Context<Game>
 private:
 	GLuint m_iVertexArray;
 	GLuint m_iBuffers[2];
+
 	bool m_bSwap;
+	std::chrono::steady_clock::time_point m_GameUpdate;
 
 	int m_iCx;
 	int m_iCy;
@@ -31,7 +34,7 @@ public:
 	void SetPointSize();
 	bool Load();
 	bool Save();
-	void Tick(bool bUpdate, bool bRun);
+	bool Tick();
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();

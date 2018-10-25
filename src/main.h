@@ -16,12 +16,13 @@ private:
 	Menu* m_pMenu;
 	Game* m_pGame;
 
-	bool m_bRun;
-	std::chrono::steady_clock::time_point m_frameTime;
-	int64_t m_iDelay;
-
 public:
 	SDL_Window* m_pWnd;
+	bool m_bRun;
+	std::chrono::steady_clock::time_point m_frameTime;
+	int64_t m_FrameCount;
+	int64_t m_iDelay;
+
 	
 public:
 	Life();

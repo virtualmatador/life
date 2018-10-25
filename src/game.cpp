@@ -11,6 +11,7 @@ Game::Game(Life* pApp)
 	, m_iVertexArray{0}
 	, m_iBuffers{0, 0}
 	, m_bSwap{false}
+	, m_GameUpdate{std::chrono::nanoseconds(0)}
 	, m_iCx{0}
 	, m_iCy{0}
 {
@@ -105,20 +106,27 @@ void Game::SetPointSize()
 	glPointSize(std::min(0.75 * iWidth / m_iCx, 0.75 * iHeight / m_iCy));
 }
 
-void Game::Tick(bool bUpdate, bool bRun)
+bool Game::Tick()
 {
-	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
-	if (bRun)
+	m_pApp->m_FrameCount += m_pApp->m_bRun;
+	int64_t duration = (m_pApp->m_frameTime - m_GameUpdate).count() / 1000ll;
+	bool bUpdate = !m_pApp->m_bRun || duration > (50ll * 1000ll);
+	if (m_pApp->m_bRun)
 		m_bSwap = !m_bSwap;
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
 	if (bUpdate)
+	{
+		m_GameUpdate = m_pApp->m_frameTime;
 		glDisable(GL_RASTERIZER_DISCARD);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 	else
 		glEnable(GL_RASTERIZER_DISCARD);
-	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawArrays(GL_POINTS, 0, m_iCx * m_iCy);
 	glFinish();
+	return bUpdate;
 }
 
 const char* Game::GetVertexStart()

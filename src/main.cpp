@@ -2,11 +2,12 @@
 #include <iostream>
 
 Life::Life()
-	: m_pWnd{nullptr}
-	, m_pGame{nullptr}
+	: m_pGame{nullptr}
 	, m_pMenu{nullptr}
+	, m_pWnd{nullptr}
 	, m_bRun{false}
 	, m_frameTime{std::chrono::nanoseconds(0)}
+	, m_FrameCount{0}
 	, m_iDelay{33333}
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -160,27 +161,10 @@ void Life::Refresh()
 
 void Life::Tick()
 {
-	static std::chrono::steady_clock::time_point GameUpdate(std::chrono::nanoseconds(0));
-	static std::chrono::steady_clock::time_point MenuUpdate(std::chrono::nanoseconds(0));
-	static int64_t FrameCount = 0;
-	FrameCount += m_bRun;
-	int64_t duration = (m_frameTime - GameUpdate).count() / 1000ll;
-	bool bUpdateGame = !m_bRun || duration > (50ll * 1000ll);
-	m_pGame->Tick(bUpdateGame, m_bRun);
-	if (bUpdateGame)
+	if (m_pGame->Tick())
 	{
-		static double dSpeed = 0;
-		int64_t duration = (m_frameTime - MenuUpdate).count() / 1000ll;
-		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll);
-		if (bUpdateMenu && m_bRun)
-		{
-			dSpeed = FrameCount == 0 ? 0 : double(FrameCount) * (1000.0 * 1000.0) / duration;
-			FrameCount = 0;
-			MenuUpdate = m_frameTime;
-		}
-		m_pMenu->Tick(bUpdateMenu, dSpeed , m_iDelay > 0 ? double(1000.0 * 1000.0) / m_iDelay : 0ll);
+		m_pMenu->Tick();
 		SDL_GL_SwapWindow(m_pWnd);
-		GameUpdate = m_frameTime;
 	}
 }
 

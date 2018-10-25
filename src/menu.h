@@ -5,6 +5,7 @@
 
 #include <string>
 #include <list>
+#include <chrono>
 
 extern const char _binary_src_shader_menu_vertex_glsl_end[];
 extern const char _binary_src_shader_menu_vertex_glsl_start[];
@@ -22,6 +23,9 @@ private:
 	GLuint m_iFontBuffer;
 	GLuint m_iTextBuffer;
 
+	double m_dSpeed = 0;
+	std::chrono::steady_clock::time_point m_MenuUpdate;
+
 	static const float m_arFont[][8][2];
 	int m_iCharCount;
 	std::list<Control> m_lstControl;
@@ -35,7 +39,7 @@ public:
 
 	SDL_Window* GetWindow();
 	void UploadTexts();
-	void Tick(bool bUpdate, double dRealSpeed, double dNominalSpeed);
+	bool Tick();
 	bool HitTest(int x, int y);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
@@ -43,4 +47,7 @@ public:
 	const char* GetGeometryEnd();
 	const char* GetFragmentStart();
 	const char* GetFragmentEnd();
+
+private:
+	void RefreshTexts();
 };
