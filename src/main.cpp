@@ -172,7 +172,7 @@ void Life::Tick()
 		static double dSpeed = 0;
 		int64_t duration = (m_frameTime - MenuUpdate).count() / 1000ll;
 		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll);
-		if (bUpdateMenu)
+		if (bUpdateMenu && m_bRun)
 		{
 			dSpeed = FrameCount == 0 ? 0 : double(FrameCount) * (1000.0 * 1000.0) / duration;
 			FrameCount = 0;
