@@ -13,7 +13,6 @@
 class Life
 {
 private:
-	SDL_Window* m_pWnd;
 	Menu* m_pMenu;
 	Game* m_pGame;
 
@@ -22,13 +21,20 @@ private:
 	int64_t m_iDelay;
 
 public:
+	SDL_Window* m_pWnd;
+	
+public:
 	Life();
 	~Life();
 	int Run(int argc, char* argv[]);
+
+	void SpeedUp();
+	void SpeedDown();
 
 private:
 	SDL_Window* CreateWindow();
 	int HandleEvent(SDL_Event* pEvent);
 	void OnResize();
+	void Refresh();
 	void Tick();
 };

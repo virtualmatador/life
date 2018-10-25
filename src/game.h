@@ -24,9 +24,10 @@ private:
 	int m_iCy;
 
 public:
-	Game(SDL_Window* pWnd);
+	Game(Life* pApp);
 	~Game();
-
+	
+	SDL_Window* GetWindow();
 	void SetPointSize();
 	bool Load();
 	bool Save();

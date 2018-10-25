@@ -1,12 +1,13 @@
 #include "game.h"
+#include "main.h"
 
 #include "file-dialog.h"
 
 #include <fstream>
 #include <vector>
 
-Game::Game(SDL_Window* pWnd)
-	: Context<Game>{pWnd}
+Game::Game(Life* pApp)
+	: Context<Game>{pApp}
 	, m_iVertexArray{0}
 	, m_iBuffers{0, 0}
 	, m_bSwap{false}
@@ -25,10 +26,15 @@ Game::Game(SDL_Window* pWnd)
 
 Game::~Game()
 {
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &m_iVertexArray);
 	glDeleteBuffers(2, m_iBuffers);
+}
+
+SDL_Window* Game::GetWindow()
+{
+	return m_pApp->m_pWnd;
 }
 
 bool Game::Load()
@@ -56,7 +62,7 @@ bool Game::Load()
 			img >> vCell[y * iWidth + x];
 		}
 	}
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[0]);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
 		vCell.data(), GL_DYNAMIC_COPY);
@@ -79,29 +85,29 @@ bool Game::Load()
 bool Game::Save()
 {
 	std::ofstream img(GetFileName(true));
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	return true;
 }
 
 std::string Game::GetFileName(bool bSave)
 {
-	SDL_HideWindow(m_pWnd);
+	SDL_HideWindow(m_pApp->m_pWnd);
 	std::string sName = GetOpenFileName(bSave);
-	SDL_ShowWindow(m_pWnd);
+	SDL_ShowWindow(m_pApp->m_pWnd);
 	return sName;
 }
 
 void Game::SetPointSize()
 {
 	int iWidth, iHeight;
-	SDL_GetWindowSize(m_pWnd, &iWidth, &iHeight);
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GetWindowSize(m_pApp->m_pWnd, &iWidth, &iHeight);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glPointSize(std::min(0.75 * iWidth / m_iCx, 0.75 * iHeight / m_iCy));
 }
 
 void Game::Tick(bool bUpdate, bool bRun)
 {
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	if (bRun)
 		m_bSwap = !m_bSwap;
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);

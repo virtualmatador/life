@@ -1,30 +1,34 @@
 #pragma once
 
+//#include "main.h"
+
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
+
+class Life;
 
 template <typename T>
 class Context
 {
 protected:
 	SDL_GLContext m_pContext;
-	SDL_Window* m_pWnd;
+	Life* m_pApp;
 	GLuint m_iProgram;
 
 public:
-	Context(SDL_Window* pWnd);
+	Context(Life* pApp);
 	~Context();
 
 	void SetWindowSize();
 };
 
 template<typename T>
-Context<T>::Context(SDL_Window* pWnd)
-	: m_pWnd{pWnd}
+Context<T>::Context(Life* pApp)
+	: m_pApp{pApp}
 	, m_iProgram{0}
 {
-	m_pContext = SDL_GL_CreateContext(m_pWnd);
+	m_pContext = SDL_GL_CreateContext(((T*)this)->GetWindow());
 	if (!m_pContext)
 		throw "SDL_GL_CreateContext";
 
@@ -100,7 +104,7 @@ template<typename T>
 void Context<T>::SetWindowSize()
 {
 	int iWidth, iHeight;
-	SDL_GetWindowSize(m_pWnd, &iWidth, &iHeight);
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GetWindowSize(((T*)this)->GetWindow(), &iWidth, &iHeight);
+	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
 	glViewport(0, 0, iWidth, iHeight);
 }

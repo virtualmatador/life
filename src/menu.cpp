@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "main.h"
 
 #include <sstream>
 #include <iomanip>
@@ -200,8 +201,8 @@ const float Menu::m_arFont[][8][2] =
 	},
 };
 
-Menu::Menu(SDL_Window* pWnd)
-	: Context<Menu>{pWnd}
+Menu::Menu(Life* pApp)
+	: Context<Menu>{pApp}
 	, m_iFontBuffer{0}
 	, m_iTextBuffer{0}
 	, m_iCharCount{0}
@@ -225,17 +226,28 @@ Menu::Menu(SDL_Window* pWnd)
 
 	m_pRealSpeed = m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 0.04})->GetText();
 	m_pNominalSpeed = m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 0.04})->GetText();
-	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 0.03, 0.8, 0.2, 0.2, "UP"});
-	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 0.03, 0.2, 8.0, 0.2, "DOWN"});
+	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 0.03, 0.8, 0.2, 0.2, "UP", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedUp();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 0.03, 0.2, 8.0, 0.2, "DOWN", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedDown();
+	}, (void*)m_pApp});
 }
 
 Menu::~Menu()
 {
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &m_iVertexArray);
 	glDeleteBuffers(1, &m_iFontBuffer);
 	glDeleteBuffers(1, &m_iTextBuffer);
+}
+
+SDL_Window* Menu::GetWindow()
+{
+	return m_pApp->m_pWnd;
 }
 
 void Menu::UploadTexts()
@@ -262,19 +274,19 @@ void Menu::UploadTexts()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
+void Menu::Tick(bool bUpdate, double dRealSpeed, double dNominalSpeed)
 {
-	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	if (bUpdate)
 	{
 		{
 			std::stringstream ss;
-			ss << "SPEED:" << std::setw(7) << iRealSpeed;
+			ss << "SPEED:" << dRealSpeed;
 			*m_pRealSpeed = ss.str();
 		}
 		{
 			std::stringstream ss;
-			ss << "EXPECT:" << std::setw(7) << iNominalSpeed;
+			ss << "EXPECT:" << dNominalSpeed;
 			*m_pNominalSpeed = ss.str();
 		}
 		UploadTexts();
@@ -287,7 +299,7 @@ bool Menu::HitTest(int x, int y)
 {
 	bool bResult = false;
 	int iWidth, iHeight;
-	SDL_GetWindowSize(m_pWnd, &iWidth, & iHeight);	
+	SDL_GetWindowSize(m_pApp->m_pWnd, &iWidth, & iHeight);	
 	float fX = float(x * 2) / float(iWidth) - 1;
 	float fY = float(y * 2) / float(iHeight) - 1;
 	for (auto & cnt : m_lstControl)

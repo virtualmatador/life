@@ -2,7 +2,7 @@
 
 Control::Control(GLfloat x, GLfloat y, GLfloat scale,
 		GLfloat red, GLfloat green, GLfloat blue,
-		const char* szText,	void (*OnClick)())
+		const char* szText,	void (*OnClick)(void*), void* pArg)
 		: m_fX{x}
 		, m_fY{y}
 		, m_fScalse{scale}
@@ -13,6 +13,7 @@ Control::Control(GLfloat x, GLfloat y, GLfloat scale,
 	m_fColor[1] = green;
 	m_fColor[2] = blue;
 	m_OnClick = OnClick;
+	m_pArg = pArg;
 }
 
 Control::~Control()
@@ -46,7 +47,7 @@ bool Control::Click(float x, float y)
 		x > m_fX && x < m_fX + m_Text.size() * m_fScalse &&
 		y > m_fY && y < m_fY + 1.5 * m_fScalse)
 	{
-		m_OnClick();
+		m_OnClick(m_pArg);
 		return true;
 	}
 	return false;

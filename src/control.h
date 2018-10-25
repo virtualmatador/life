@@ -15,7 +15,8 @@ private:
 	GLfloat m_fY;
 	GLfloat m_fScalse;
 	GLfloat m_fColor[3];
-	void (*m_OnClick)();
+	void (*m_OnClick)(void*);
+	void* m_pArg;
 
 public:
 	Control(GLfloat x, GLfloat y, GLfloat scale,
@@ -23,7 +24,8 @@ public:
 		GLfloat green = 1.0f,
 		GLfloat blue = 1.0f,
 		const char* szText = nullptr,
-		void (*OnClick)() = nullptr);
+		void (*OnClick)(void*) = nullptr,
+		void* pArg = nullptr);
 	~Control();
 	std::string* GetText();
 	int Write(std::stringstream & stream);

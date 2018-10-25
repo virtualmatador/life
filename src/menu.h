@@ -15,7 +15,6 @@ extern const char _binary_src_shader_menu_geometry_glsl_start[];
 extern const char _binary_src_shader_menu_fragment_glsl_end[];
 extern const char _binary_src_shader_menu_fragment_glsl_start[];
 
-
 class Menu: public Context<Menu>
 {
 private:
@@ -31,11 +30,12 @@ private:
 	std::string* m_pNominalSpeed;
 
 public:
-	Menu(SDL_Window* pWnd);
+	Menu(Life* pApp);
 	~Menu();
 
+	SDL_Window* GetWindow();
 	void UploadTexts();
-	void Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed);
+	void Tick(bool bUpdate, double dRealSpeed, double dNominalSpeed);
 	bool HitTest(int x, int y);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();

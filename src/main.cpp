@@ -13,9 +13,9 @@ Life::Life()
 		throw "SDL_INIT";
 	if (!(m_pWnd = CreateWindow()))
 		throw "CreateWindow";
-	if (!(m_pMenu = new Menu(m_pWnd)))
+	if (!(m_pMenu = new Menu(this)))
 		throw "SDL_GL_CreateContext";
-	if (!(m_pGame = new Game(m_pWnd)))
+	if (!(m_pGame = new Game(this)))
 		throw "SDL_GL_CreateContext";
 	OnResize();
 }
@@ -121,24 +121,10 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			}
 			break;
 		case SDL_SCANCODE_UP:
-			if (m_iDelay > 0ll)
-			{
-				m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
-				m_iDelay = m_iDelay * 8 / 10;
-				m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
-				if (!m_bRun)
-					Tick();
-			}
+			SpeedUp();
 			break;
 		case SDL_SCANCODE_DOWN:
-			if (m_iDelay < (100ll * 1000ll * 1000ll))
-			{
-				m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
-				m_iDelay = (m_iDelay + 1) * 10 / 8;
-				m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
-				if (!m_bRun)
-					Tick();
-			}
+			SpeedDown();
 			break;
 		}
 		break;
@@ -159,12 +145,17 @@ void Life::OnResize()
 	m_pMenu->SetWindowSize();
 	m_pGame->SetWindowSize();
 	m_pGame->SetPointSize();
+	Refresh();
+	if (!m_bRun)
+		Tick();
+}
+
+void Life::Refresh()
+{
 	bool bRun = m_bRun;
 	m_bRun = false;
 	Tick();
 	m_bRun = bRun;
-	if (!m_bRun)
-		Tick();
 }
 
 void Life::Tick()
@@ -178,18 +169,40 @@ void Life::Tick()
 	m_pGame->Tick(bUpdateGame, m_bRun);
 	if (bUpdateGame)
 	{
-		static int64_t iSpeed = 0;
+		static double dSpeed = 0;
 		int64_t duration = (m_frameTime - MenuUpdate).count() / 1000ll;
 		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll);
 		if (bUpdateMenu)
 		{
-			iSpeed = FrameCount == 0 ? 0 : FrameCount * (1000ll * 1000ll) / duration;
+			dSpeed = FrameCount == 0 ? 0 : double(FrameCount) * (1000.0 * 1000.0) / duration;
 			FrameCount = 0;
 			MenuUpdate = m_frameTime;
 		}
-		m_pMenu->Tick(bUpdateMenu, iSpeed , m_iDelay > 0 ? (1000ll * 1000ll) / m_iDelay : 0ll);
+		m_pMenu->Tick(bUpdateMenu, dSpeed , m_iDelay > 0 ? double(1000.0 * 1000.0) / m_iDelay : 0ll);
 		SDL_GL_SwapWindow(m_pWnd);
 		GameUpdate = m_frameTime;
+	}
+}
+
+void Life::SpeedUp()
+{
+	if (m_iDelay > 0ll)
+	{
+		m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
+		m_iDelay = m_iDelay * 8 / 10;
+		m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
+		Refresh();
+	}
+}
+
+void Life::SpeedDown()
+{
+	if (m_iDelay < (100ll * 1000ll * 1000ll))
+	{
+		m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
+		m_iDelay = (m_iDelay + 1) * 10 / 8;
+		m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
+		Refresh();
 	}
 }
 
