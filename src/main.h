@@ -19,6 +19,7 @@ private:
 public:
 	SDL_Window* m_pWnd;
 	bool m_bRun;
+	bool m_bMenu;
 	bool m_bRefresh;
 	std::chrono::steady_clock::time_point m_frameTime;
 	int64_t m_FrameCount;
@@ -31,8 +32,11 @@ public:
 	int Run(int argc, char* argv[]);
 
 	void ToggleGame();
+	void ToggleMenu();
 	void SpeedUp();
 	void SpeedDown();
+	void Load();
+	void Save();
 
 private:
 	SDL_Window* CreateWindow();

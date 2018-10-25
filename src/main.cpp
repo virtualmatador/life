@@ -6,6 +6,7 @@ Life::Life()
 	, m_pMenu{nullptr}
 	, m_pWnd{nullptr}
 	, m_bRun{false}
+	, m_bMenu{true}
 	, m_bRefresh{false}
 	, m_frameTime{std::chrono::nanoseconds(0)}
 	, m_FrameCount{0}
@@ -105,21 +106,21 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			{
 				if (m_bRun)
 					ToggleGame();
+				if (!m_bMenu)
+					ToggleMenu();
 			}
 			break;
 		case SDL_SCANCODE_L:
-			if (pEvent->key.repeat == 0 && !m_bRun)
-			{
-				m_pGame->Load();
-				Refresh();
-			}
+			if (pEvent->key.repeat == 0)
+				Load();
 			break;
 		case SDL_SCANCODE_S:
-			if (pEvent->key.repeat == 0 && !m_bRun)
-			{
-				m_pGame->Save();
-				Refresh();
-			}
+			if (pEvent->key.repeat == 0)
+				Save();
+			break;
+		case SDL_SCANCODE_M:
+			if (pEvent->key.repeat == 0)
+				ToggleMenu();
 			break;
 		case SDL_SCANCODE_UP:
 			SpeedUp();
@@ -174,6 +175,12 @@ void Life::ToggleGame()
 	Refresh();
 }
 
+void Life::ToggleMenu()
+{
+	m_bMenu = !m_bMenu;
+	Refresh();
+}
+
 void Life::SpeedUp()
 {
 	if (m_iDelay > 0ll)
@@ -194,6 +201,22 @@ void Life::SpeedDown()
 		m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
 		Refresh();
 	}
+}
+
+void Life::Load()
+{
+	if (m_bRun)
+		ToggleGame();
+	m_pGame->Load();
+	Refresh();
+}
+
+void Life::Save()
+{
+	if (m_bRun)
+		ToggleGame();
+	m_pGame->Save();
+	Refresh();
 }
 
 int main(int argc, char* argv[])

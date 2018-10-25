@@ -251,6 +251,18 @@ Menu::Menu(Life* pApp)
 	{
 		((Life*)pArg)->ToggleGame();
 	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 0.04, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
+	{
+		((Life*)pArg)->ToggleMenu();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 0.04, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
+	{
+		((Life*)pArg)->Load();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 0.04, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
+	{
+		((Life*)pArg)->Save();
+	}, (void*)m_pApp});
 }
 
 Menu::~Menu()
@@ -314,7 +326,8 @@ bool Menu::Tick()
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	if (bUpdate)
 		UploadTexts();
-	glDrawArrays(GL_POINTS, 0, m_iCharCount);
+	if (m_pApp->m_bMenu)
+		glDrawArrays(GL_POINTS, 0, m_iCharCount);
 	glFinish();
 	return bUpdate;
 }
@@ -322,14 +335,17 @@ bool Menu::Tick()
 bool Menu::HitTest(int x, int y)
 {
 	bool bResult = false;
-	int iWidth, iHeight;
-	SDL_GetWindowSize(m_pApp->m_pWnd, &iWidth, & iHeight);	
-	float fX = float(x * 2) / float(iWidth) - 1;
-	float fY = float(y * 2) / float(iHeight) - 1;
-	for (auto & cnt : m_lstControl)
+	if (m_pApp->m_bMenu)
 	{
-		if (cnt.Click(fX, -fY))
-			bResult = true;
+		int iWidth, iHeight;
+		SDL_GetWindowSize(m_pApp->m_pWnd, &iWidth, & iHeight);	
+		float fX = float(x * 2) / float(iWidth) - 1;
+		float fY = float(y * 2) / float(iHeight) - 1;
+		for (auto & cnt : m_lstControl)
+		{
+			if (cnt.Click(fX, -fY))
+				bResult = true;
+		}
 	}
 	return bResult;
 }
