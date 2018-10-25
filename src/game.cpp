@@ -42,15 +42,18 @@ bool Game::Load()
 {
 	std::ifstream img(GetFileName(false));
 	char sign[3] = {0};
-	if (img)
-		img >> sign[0] >> sign[1];
+	if (!img)
+		return false;
+	img >> sign[0] >> sign[1];
 	if (strcmp(sign, "P1") != 0)
 		return false;
 	int iWidth, iHeight;
-	if (img)
-		img >> iWidth;
-	if (img)
-		img >> iHeight;
+	if (!img)
+		return false;
+	img >> iWidth;
+	if (!img)
+		return false;
+	img >> iHeight;
 	if (iWidth <= 0 || iWidth > 0x1000 || iHeight <= 0 || iHeight > 0x1000)
 		return false;
 	std::vector<GLint> vCell(iWidth * iHeight);
@@ -86,7 +89,29 @@ bool Game::Load()
 bool Game::Save()
 {
 	std::ofstream img(GetFileName(true));
+	if (!img)
+		return false;
+	std::vector<GLint> vCell(m_iCx * m_iCy);
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[m_bSwap]);
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, vCell.size() * sizeof(GLint), vCell.data());
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	if (!img)
+		return false;
+	img << "P1" << std::endl;
+	if (!img)
+		return false;
+	img << m_iCx << " " << m_iCy << std::endl;
+	for (int y = 0; y < m_iCy; ++y)
+	{
+		for (int x = 0; x < m_iCx; ++x)
+		{
+			if (!img)
+				return false;
+			img << vCell[y * m_iCx + x] << " ";
+		}
+		img << std::endl;
+	}
 	return true;
 }
 

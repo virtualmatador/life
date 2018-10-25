@@ -6,7 +6,11 @@ std::string GetOpenFileName(bool bSave)
 	std::string sName;
 #ifdef __linux__
 	char file[1024];
-	FILE *f = popen("zenity --file-selection  2> /dev/null", "r");
+	FILE *f;
+	if (bSave)
+		f = popen("zenity --file-selection --save 2> /dev/null", "r");
+	else
+		f = popen("zenity --file-selection 2> /dev/null", "r");
  	fgets(file, 1024, f);
 	pclose(f);
 	file[strlen(file) - 1] = 0;
