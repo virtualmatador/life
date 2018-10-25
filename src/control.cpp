@@ -20,9 +20,9 @@ Control::~Control()
 {
 }
 
-std::string* Control::GetText()
+void Control::SetText(std::string && str)
 {
-	return &m_Text;
+	m_Text = str;
 }
 
 int Control::Write(std::stringstream & stream)

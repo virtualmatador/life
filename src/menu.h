@@ -30,8 +30,9 @@ private:
 	int m_iCharCount;
 	std::list<Control> m_lstControl;
 
-	std::string* m_pRealSpeed;
-	std::string* m_pNominalSpeed;
+	Control* m_pToggle;
+	Control* m_pRealSpeed;
+	Control* m_pNominalSpeed;
 
 public:
 	Menu(Life* pApp);

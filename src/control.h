@@ -27,7 +27,7 @@ public:
 		void (*OnClick)(void*) = nullptr,
 		void* pArg = nullptr);
 	~Control();
-	std::string* GetText();
+	void SetText(std::string && str);
 	int Write(std::stringstream & stream);
 	bool Click(float x, float y);
 };

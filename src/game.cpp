@@ -108,11 +108,13 @@ void Game::SetPointSize()
 
 bool Game::Tick()
 {
-	m_pApp->m_FrameCount += m_pApp->m_bRun;
 	int64_t duration = (m_pApp->m_frameTime - m_GameUpdate).count() / 1000ll;
-	bool bUpdate = !m_pApp->m_bRun || duration > (50ll * 1000ll);
+	bool bUpdate = m_pApp->m_bRefresh || duration > (50ll * 1000ll);
 	if (m_pApp->m_bRun)
+	{
 		m_bSwap = !m_bSwap;
+		++m_pApp->m_FrameCount;
+	}
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bSwap, m_iBuffers[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);

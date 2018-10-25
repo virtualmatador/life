@@ -6,6 +6,7 @@ Life::Life()
 	, m_pMenu{nullptr}
 	, m_pWnd{nullptr}
 	, m_bRun{false}
+	, m_bRefresh{false}
 	, m_frameTime{std::chrono::nanoseconds(0)}
 	, m_FrameCount{0}
 	, m_iDelay{33333}
@@ -92,33 +93,32 @@ int Life::HandleEvent(SDL_Event* pEvent)
 				m_bRun = true;
 				Tick();
 				m_bRun = false;
-				Tick();
+				Refresh();
 			}
 			break;
 		case SDL_SCANCODE_SPACE:
 			if (pEvent->key.repeat == 0)
-			{
-				m_bRun = !m_bRun;
-				if (m_bRun)
-					m_frameTime = std::chrono::steady_clock::now();
-			}
+				ToggleGame();
 			break;
 		case SDL_SCANCODE_ESCAPE:
 			if (pEvent->key.repeat == 0)
-				m_bRun = false;
+			{
+				if (m_bRun)
+					ToggleGame();
+			}
 			break;
 		case SDL_SCANCODE_L:
 			if (pEvent->key.repeat == 0 && !m_bRun)
 			{
 				m_pGame->Load();
-				Tick();
+				Refresh();
 			}
 			break;
 		case SDL_SCANCODE_S:
 			if (pEvent->key.repeat == 0 && !m_bRun)
 			{
 				m_pGame->Save();
-				Tick();
+				Refresh();
 			}
 			break;
 		case SDL_SCANCODE_UP:
@@ -147,16 +147,14 @@ void Life::OnResize()
 	m_pGame->SetWindowSize();
 	m_pGame->SetPointSize();
 	Refresh();
-	if (!m_bRun)
-		Tick();
+	Refresh();
 }
 
 void Life::Refresh()
 {
-	bool bRun = m_bRun;
-	m_bRun = false;
+	m_bRefresh = true;
 	Tick();
-	m_bRun = bRun;
+	m_bRefresh = false;
 }
 
 void Life::Tick()
@@ -166,6 +164,14 @@ void Life::Tick()
 		m_pMenu->Tick();
 		SDL_GL_SwapWindow(m_pWnd);
 	}
+}
+
+void Life::ToggleGame()
+{
+	m_bRun = !m_bRun;
+	if (m_bRun)
+		m_frameTime = std::chrono::steady_clock::now();
+	Refresh();
 }
 
 void Life::SpeedUp()

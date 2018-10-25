@@ -19,6 +19,7 @@ private:
 public:
 	SDL_Window* m_pWnd;
 	bool m_bRun;
+	bool m_bRefresh;
 	std::chrono::steady_clock::time_point m_frameTime;
 	int64_t m_FrameCount;
 	int64_t m_iDelay;
@@ -29,6 +30,7 @@ public:
 	~Life();
 	int Run(int argc, char* argv[]);
 
+	void ToggleGame();
 	void SpeedUp();
 	void SpeedDown();
 
