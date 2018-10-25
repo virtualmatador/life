@@ -1,8 +1,10 @@
 #pragma once
 
 #include "context.hpp"
+#include "control.h"
 
 #include <string>
+#include <list>
 
 extern const char _binary_src_shader_menu_vertex_glsl_end[];
 extern const char _binary_src_shader_menu_vertex_glsl_start[];
@@ -13,14 +15,6 @@ extern const char _binary_src_shader_menu_geometry_glsl_start[];
 extern const char _binary_src_shader_menu_fragment_glsl_end[];
 extern const char _binary_src_shader_menu_fragment_glsl_start[];
 
-struct TEXT
-{
-	std::string text;
-	GLfloat fX;
-	GLfloat fY;
-	GLfloat fScalse;
-	GLfloat fColor[3];
-};
 
 class Menu: public Context<Menu>
 {
@@ -31,10 +25,10 @@ private:
 
 	static const float m_arFont[][8][2];
 	int m_iCharCount;
-	TEXT m_RealSpeed;
-	TEXT m_NominalSpeed;
-	TEXT m_Up;
-	TEXT m_Down;
+	std::list<Control> m_lstControl;
+
+	std::string* m_pRealSpeed;
+	std::string* m_pNominalSpeed;
 
 public:
 	Menu(SDL_Window* pWnd);
@@ -48,7 +42,4 @@ public:
 	const char* GetGeometryEnd();
 	const char* GetFragmentStart();
 	const char* GetFragmentEnd();
-
-private:
-	void UploadText(TEXT & txt, std::stringstream & stream);
 };

@@ -205,10 +205,6 @@ Menu::Menu(SDL_Window* pWnd)
 	, m_iFontBuffer{0}
 	, m_iTextBuffer{0}
 	, m_iCharCount{0}
-	, m_RealSpeed{"", -0.8, -0.7, 0.04, {1.0, 1.0, 1.0}}
-	, m_NominalSpeed{"", -0.84, -0.78, 0.04, {1.0, 1.0, 1.0}}
-	, m_Up{"UP", -0.22, -0.7, 0.03, {0.8, 0.2, 0.2}}
-	, m_Down{"DOWN", -0.26, -0.84, 0.03, {0.2, 8.0, 0.2}}
 {
 	glGenVertexArrays(1, &m_iVertexArray);
 	if (m_iVertexArray == 0)
@@ -226,6 +222,11 @@ Menu::Menu(SDL_Window* pWnd)
 	if (m_iTextBuffer == 0)
 		throw "glGenBuffers";
 	glLineWidth(2);
+
+	m_pRealSpeed = m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 0.04})->GetText();
+	m_pNominalSpeed = m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 0.04})->GetText();
+	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 0.03, 0.8, 0.2, 0.2, "UP"});
+	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 0.03, 0.2, 8.0, 0.2, "DOWN"});
 }
 
 Menu::~Menu()
@@ -241,10 +242,8 @@ void Menu::UploadTexts()
 {
 	m_iCharCount = 0;
 	std::stringstream arData(std::ios::in | std::ios::out | std::ios::binary);
-	UploadText(m_RealSpeed, arData);
-	UploadText(m_NominalSpeed, arData);
-	UploadText(m_Up, arData);
-	UploadText(m_Down, arData);
+	for (auto & cnt : m_lstControl)
+		m_iCharCount += cnt.Write(arData);
 	arData.seekg(0, std::ios::beg);
 	std::vector<unsigned char> vData(m_iCharCount * 7 * sizeof(GLfloat));
 	arData.read((char*)vData.data(), vData.size());
@@ -263,22 +262,6 @@ void Menu::UploadTexts()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Menu::UploadText(TEXT & txt, std::stringstream & stream)
-{
-	for (int i = 0; i < txt.text.size(); ++i)
-	{
-		float fData = txt.fX + txt.fScalse * i;
-		stream.write((char*)&fData, sizeof(GLfloat));
-		stream.write((char*)&txt.fY, sizeof(GLfloat));
-		fData = txt.fScalse * 0.7;
-		stream.write((char*)&fData, sizeof(GLfloat));
-		int iData = txt.text[i] - 32;
-		stream.write((char*)&iData, sizeof(GLint));
-		stream.write((char*)txt.fColor, sizeof(GLfloat) * 3);
-	}
-	m_iCharCount += txt.text.size();
-}
-
 void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
 {
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
@@ -287,12 +270,12 @@ void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
 		{
 			std::stringstream ss;
 			ss << "SPEED:" << std::setw(7) << iRealSpeed;
-			m_RealSpeed.text = ss.str();
+			*m_pRealSpeed = ss.str();
 		}
 		{
 			std::stringstream ss;
 			ss << "EXPECT:" << std::setw(7) << iNominalSpeed;
-			m_NominalSpeed.text = ss.str();
+			*m_pNominalSpeed = ss.str();
 		}
 		UploadTexts();
 	}
