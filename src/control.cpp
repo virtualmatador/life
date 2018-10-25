@@ -44,7 +44,7 @@ bool Control::Click(float x, float y)
 {
 	if (m_OnClick &&
 		x > m_fX && x < m_fX + m_Text.size() * m_fScalse &&
-		y > m_fY && y < m_fX + 1.5 * m_fScalse)
+		y > m_fY && y < m_fY + 1.5 * m_fScalse)
 	{
 		m_OnClick();
 		return true;

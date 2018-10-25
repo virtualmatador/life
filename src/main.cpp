@@ -142,6 +142,14 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			break;
 		}
 		break;
+	case SDL_MOUSEBUTTONDOWN:
+		switch (pEvent->button.button)
+		{
+		case SDL_BUTTON_LEFT:
+			m_pMenu->HitTest(pEvent->button.x, pEvent->button.y);
+			break;
+		}
+		break;
 	}
 	return 0;
 }

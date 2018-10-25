@@ -283,6 +283,21 @@ void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
 	glFinish();
 }
 
+bool Menu::HitTest(int x, int y)
+{
+	bool bResult = false;
+	int iWidth, iHeight;
+	SDL_GetWindowSize(m_pWnd, &iWidth, & iHeight);	
+	float fX = float(x * 2) / float(iWidth) - 1;
+	float fY = float(y * 2) / float(iHeight) - 1;
+	for (auto & cnt : m_lstControl)
+	{
+		if (cnt.Click(fX, -fY))
+			bResult = true;
+	}
+	return bResult;
+}
+
 const char* Menu::GetVertexStart()
 {
 	return _binary_src_shader_menu_vertex_glsl_start;

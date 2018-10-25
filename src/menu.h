@@ -36,6 +36,7 @@ public:
 
 	void UploadTexts();
 	void Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed);
+	bool HitTest(int x, int y);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();
