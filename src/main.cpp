@@ -169,10 +169,17 @@ void Life::Tick()
 
 void Life::ToggleGame()
 {
-	m_bRun = !m_bRun;
 	if (m_bRun)
+	{
+		m_bRun = false;
+		Refresh();
+	}
+	else
+	{
+		Refresh();
+		m_bRun = true;
 		m_frameTime = std::chrono::steady_clock::now();
-	Refresh();
+	}
 }
 
 void Life::ToggleMenu()
