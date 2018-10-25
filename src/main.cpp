@@ -7,7 +7,7 @@ Life::Life()
 	, m_pMenu{nullptr}
 	, m_bRun{false}
 	, m_frameTime{std::chrono::nanoseconds(0)}
-	, m_iDelay{33333333}
+	, m_iDelay{33333}
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw "SDL_INIT";
@@ -52,7 +52,7 @@ int Life::Run(int argc, char* argv[])
 			if (wait.count() < 0)
 			{
 				Tick();
-				m_frameTime += std::chrono::nanoseconds(std::max(m_iDelay, -wait.count()));
+				m_frameTime += std::chrono::nanoseconds(std::max(m_iDelay * 1000, -wait.count()));
 				iEvent = SDL_PollEvent(&event);
 			}
 			else
@@ -123,19 +123,19 @@ int Life::HandleEvent(SDL_Event* pEvent)
 		case SDL_SCANCODE_UP:
 			if (m_iDelay > 0ll)
 			{
-				m_frameTime -= std::chrono::nanoseconds(m_iDelay);
+				m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
 				m_iDelay = m_iDelay * 8 / 10;
-				m_frameTime += std::chrono::nanoseconds(m_iDelay);
+				m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
 				if (!m_bRun)
 					Tick();
 			}
 			break;
 		case SDL_SCANCODE_DOWN:
-			if (m_iDelay < (100ll * 1000ll * 1000ll * 1000ll))
+			if (m_iDelay < (100ll * 1000ll * 1000ll))
 			{
-				m_frameTime -= std::chrono::nanoseconds(m_iDelay);
+				m_frameTime -= std::chrono::nanoseconds(m_iDelay * 1000ll);
 				m_iDelay = (m_iDelay + 1) * 10 / 8;
-				m_frameTime += std::chrono::nanoseconds(m_iDelay);
+				m_frameTime += std::chrono::nanoseconds(m_iDelay * 1000ll);
 				if (!m_bRun)
 					Tick();
 			}
@@ -165,21 +165,21 @@ void Life::Tick()
 	static std::chrono::steady_clock::time_point MenuUpdate(std::chrono::nanoseconds(0));
 	static int64_t FrameCount = 0;
 	FrameCount += m_bRun;
-	int64_t duration = (m_frameTime - GameUpdate).count();
-	bool bUpdateGame = !m_bRun || duration > (50ll * 1000ll * 1000ll);
+	int64_t duration = (m_frameTime - GameUpdate).count() / 1000ll;
+	bool bUpdateGame = !m_bRun || duration > (50ll * 1000ll);
 	m_pGame->Tick(bUpdateGame, m_bRun);
 	if (bUpdateGame)
 	{
 		static int64_t iSpeed = 0;
-		int64_t duration = (m_frameTime - MenuUpdate).count();
-		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll * 1000ll);
+		int64_t duration = (m_frameTime - MenuUpdate).count() / 1000ll;
+		bool bUpdateMenu = !m_bRun || duration > (500ll * 1000ll);
 		if (bUpdateMenu)
 		{
-			iSpeed = FrameCount == 0 ? 0 : FrameCount * (1000ll * 1000ll * 1000ll) / duration;
+			iSpeed = FrameCount == 0 ? 0 : FrameCount * (1000ll * 1000ll) / duration;
 			FrameCount = 0;
 			MenuUpdate = m_frameTime;
 		}
-		m_pMenu->Tick(bUpdateMenu, iSpeed , m_iDelay > 0 ? (1000ll * 1000ll * 1000ll) / m_iDelay : 0ll);
+		m_pMenu->Tick(bUpdateMenu, iSpeed , m_iDelay > 0 ? (1000ll * 1000ll) / m_iDelay : 0ll);
 		SDL_GL_SwapWindow(m_pWnd);
 		GameUpdate = m_frameTime;
 	}

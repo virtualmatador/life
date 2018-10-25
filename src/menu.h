@@ -31,7 +31,10 @@ private:
 
 	static const float m_arFont[][8][2];
 	int m_iCharCount;
-	TEXT m_Speed;
+	TEXT m_RealSpeed;
+	TEXT m_NominalSpeed;
+	TEXT m_Up;
+	TEXT m_Down;
 
 public:
 	Menu(SDL_Window* pWnd);

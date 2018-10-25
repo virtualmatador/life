@@ -205,7 +205,10 @@ Menu::Menu(SDL_Window* pWnd)
 	, m_iFontBuffer{0}
 	, m_iTextBuffer{0}
 	, m_iCharCount{0}
-	, m_Speed{"", -0.9, 0.9, 0.05, {1.0, 1.0, 1.0}}
+	, m_RealSpeed{"", -0.8, -0.7, 0.04, {1.0, 1.0, 1.0}}
+	, m_NominalSpeed{"", -0.84, -0.78, 0.04, {1.0, 1.0, 1.0}}
+	, m_Up{"UP", -0.22, -0.7, 0.03, {0.8, 0.2, 0.2}}
+	, m_Down{"DOWN", -0.26, -0.84, 0.03, {0.2, 8.0, 0.2}}
 {
 	glGenVertexArrays(1, &m_iVertexArray);
 	if (m_iVertexArray == 0)
@@ -238,7 +241,10 @@ void Menu::UploadTexts()
 {
 	m_iCharCount = 0;
 	std::stringstream arData(std::ios::in | std::ios::out | std::ios::binary);
-	UploadText(m_Speed, arData);
+	UploadText(m_RealSpeed, arData);
+	UploadText(m_NominalSpeed, arData);
+	UploadText(m_Up, arData);
+	UploadText(m_Down, arData);
 	arData.seekg(0, std::ios::beg);
 	std::vector<unsigned char> vData(m_iCharCount * 7 * sizeof(GLfloat));
 	arData.read((char*)vData.data(), vData.size());
@@ -278,9 +284,16 @@ void Menu::Tick(bool bUpdate, int64_t iRealSpeed, int64_t iNominalSpeed)
 	SDL_GL_MakeCurrent(m_pWnd, m_pContext);
 	if (bUpdate)
 	{
-		std::stringstream ss;
-		ss << "SPEED: " << std::setw(7) << iRealSpeed << " EXPECT: " << std::setw(10) << iNominalSpeed;
-		m_Speed.text = ss.str();
+		{
+			std::stringstream ss;
+			ss << "SPEED:" << std::setw(7) << iRealSpeed;
+			m_RealSpeed.text = ss.str();
+		}
+		{
+			std::stringstream ss;
+			ss << "EXPECT:" << std::setw(7) << iNominalSpeed;
+			m_NominalSpeed.text = ss.str();
+		}
 		UploadTexts();
 	}
 	glDrawArrays(GL_POINTS, 0, m_iCharCount);
