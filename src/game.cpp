@@ -66,20 +66,10 @@ bool Game::Load()
 			img >> vCell[y * iWidth + x];
 		}
 	}
-	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[0]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
-		vCell.data(), GL_DYNAMIC_COPY);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[1]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
-		nullptr, GL_DYNAMIC_COPY);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
 	m_bSwap = false;
 	m_iCx = iWidth;
 	m_iCy = iHeight;
+	Upload(vCell);
 	glUniform1i(glGetUniformLocation(m_iProgram, "width"), m_iCx);
 	glUniform1i(glGetUniformLocation(m_iProgram, "height"), m_iCy);
 	SetPointSize();
@@ -91,11 +81,7 @@ bool Game::Save()
 	std::ofstream img(GetFileName(true));
 	if (!img)
 		return false;
-	std::vector<GLint> vCell(m_iCx * m_iCy);
-	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[m_bSwap]);
-	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, vCell.size() * sizeof(GLint), vCell.data());
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	std::vector<GLint> vCell = Download();
 	if (!img)
 		return false;
 	img << "P1" << std::endl;
@@ -154,6 +140,37 @@ bool Game::Tick()
 	glDrawArrays(GL_POINTS, 0, m_iCx * m_iCy);
 	glFinish();
 	return bUpdate;
+}
+
+void Game::Edit(float fX, float fY)
+{
+	int iX = (fX + 1.0) / 2.0 * m_iCx;
+	int iY = (1.0 - fY) / 2.0 * m_iCy;
+	std::vector<GLint> vCell = Download();
+	vCell[iY * m_iCx + iX] = !vCell[iY * m_iCx + iX];
+	Upload(vCell);
+}
+
+void Game::Upload(std::vector<GLint> vCell)
+{
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[m_bSwap]);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
+		vCell.data(), GL_DYNAMIC_COPY);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[1]);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, vCell.size() * sizeof(GLint),
+		nullptr, GL_DYNAMIC_COPY);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
+std::vector<GLint> Game::Download()
+{
+	std::vector<GLint> vCell(m_iCx * m_iCy);
+	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iBuffers[m_bSwap]);
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, vCell.size() * sizeof(GLint), vCell.data());
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	return vCell;
 }
 
 const char* Game::GetVertexStart()

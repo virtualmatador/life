@@ -41,7 +41,7 @@ public:
 	SDL_Window* GetWindow();
 	void UploadTexts();
 	bool Tick();
-	bool HitTest(int x, int y);
+	void HitTest(float fX, float fY);
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();

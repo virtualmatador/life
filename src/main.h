@@ -18,6 +18,8 @@ private:
 
 public:
 	SDL_Window* m_pWnd;
+	bool m_bEdit;
+	bool m_bFrame;
 	bool m_bRun;
 	bool m_bMenu;
 	bool m_bRefresh;
@@ -33,10 +35,13 @@ public:
 
 	void ToggleGame();
 	void ToggleMenu();
+	void ToggleEdit();
 	void SpeedUp();
 	void SpeedDown();
 	void Load();
 	void Save();
+	void Frame();
+	void Stop();
 
 private:
 	SDL_Window* CreateWindow();
@@ -44,4 +49,5 @@ private:
 	void OnResize();
 	void Refresh();
 	void Tick();
+	void Click(int iX, int iY);
 };

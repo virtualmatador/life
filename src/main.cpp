@@ -5,6 +5,8 @@ Life::Life()
 	: m_pGame{nullptr}
 	, m_pMenu{nullptr}
 	, m_pWnd{nullptr}
+	, m_bEdit{false}
+	, m_bFrame{false}
 	, m_bRun{false}
 	, m_bMenu{true}
 	, m_bRefresh{false}
@@ -89,13 +91,7 @@ int Life::HandleEvent(SDL_Event* pEvent)
 		{
 		case SDL_SCANCODE_RETURN:
 			if (pEvent->key.repeat == 0 && !m_bRun)
-			{
-				m_frameTime = std::chrono::steady_clock::now();
-				m_bRun = true;
-				Tick();
-				m_bRun = false;
-				Refresh();
-			}
+				Frame();
 			break;
 		case SDL_SCANCODE_SPACE:
 			if (pEvent->key.repeat == 0)
@@ -103,12 +99,7 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			break;
 		case SDL_SCANCODE_ESCAPE:
 			if (pEvent->key.repeat == 0)
-			{
-				if (m_bRun)
-					ToggleGame();
-				if (!m_bMenu)
-					ToggleMenu();
-			}
+				Stop();
 			break;
 		case SDL_SCANCODE_L:
 			if (pEvent->key.repeat == 0)
@@ -122,6 +113,10 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			if (pEvent->key.repeat == 0)
 				ToggleMenu();
 			break;
+		case SDL_SCANCODE_E:
+			if (pEvent->key.repeat == 0)
+				ToggleEdit();
+			break;
 		case SDL_SCANCODE_UP:
 			SpeedUp();
 			break;
@@ -134,7 +129,7 @@ int Life::HandleEvent(SDL_Event* pEvent)
 		switch (pEvent->button.button)
 		{
 		case SDL_BUTTON_LEFT:
-			m_pMenu->HitTest(pEvent->button.x, pEvent->button.y);
+			Click(pEvent->button.x, pEvent->button.y);
 			break;
 		}
 		break;
@@ -167,6 +162,21 @@ void Life::Tick()
 	}
 }
 
+void Life::Click(int iX, int iY)
+{
+	int iWidth, iHeight;
+	SDL_GetWindowSize(m_pWnd, &iWidth, & iHeight);	
+	float fX = float(iX * 2) / float(iWidth) - 1;
+	float fY = float(-iY * 2) / float(iHeight) + 1;
+	if (m_bEdit)
+	{
+		m_pGame->Edit(fX, fY);
+		Refresh();
+	}
+	else if (m_bMenu)
+		m_pMenu->HitTest(fX, fY);
+}
+
 void Life::ToggleGame()
 {
 	if (m_bRun)
@@ -176,15 +186,36 @@ void Life::ToggleGame()
 	}
 	else
 	{
-		Refresh();
-		m_bRun = true;
-		m_frameTime = std::chrono::steady_clock::now();
+		if (!m_bEdit)
+		{
+			Refresh();
+			m_bRun = true;
+			m_frameTime = std::chrono::steady_clock::now();
+		}
 	}
 }
 
 void Life::ToggleMenu()
 {
+	m_bEdit = false;
 	m_bMenu = !m_bMenu;
+	Refresh();
+}
+
+void Life::ToggleEdit()
+{
+	if (m_bEdit)
+	{
+		m_bEdit = false;
+		m_bRun = false;
+		m_bMenu = true;
+	}
+	else
+	{
+		m_bEdit = true;
+		m_bRun = false;
+		m_bMenu = false;
+	}
 	Refresh();
 }
 
@@ -212,20 +243,39 @@ void Life::SpeedDown()
 
 void Life::Load()
 {
-	if (m_bRun)
-		ToggleGame();
+	m_bRun = false;
 	m_pGame->Load();
 	Refresh();
 }
 
 void Life::Save()
 {
-	if (m_bRun)
-		ToggleGame();
+	m_bRun = false;
 	m_pGame->Save();
 	Refresh();
 }
 
+void Life::Frame()
+{
+	if (!m_bEdit)
+	{
+		m_frameTime = std::chrono::steady_clock::now();
+		m_bRun = true;
+		m_bFrame = true;
+		Tick();
+		m_bFrame = false;
+		m_bRun = false;
+		Refresh();
+	}
+}
+
+void Life::Stop()
+{
+	m_bRun = false;
+	m_bEdit = false;
+	m_bMenu = true;
+	Refresh();
+}
 int main(int argc, char* argv[])
 {
 	try

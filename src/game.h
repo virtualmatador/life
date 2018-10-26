@@ -4,6 +4,7 @@
 
 #include <string>
 #include <chrono>
+#include <vector>
 
 extern const char _binary_src_shader_game_vertex_glsl_end[];
 extern const char _binary_src_shader_game_vertex_glsl_start[];
@@ -35,6 +36,9 @@ public:
 	bool Load();
 	bool Save();
 	bool Tick();
+	void Edit(float fX, float fY);
+	void Upload(std::vector<GLint> vCell);
+	std::vector<GLint> Download();
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();

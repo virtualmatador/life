@@ -263,6 +263,14 @@ Menu::Menu(Life* pApp)
 	{
 		((Life*)pArg)->Save();
 	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 0.04, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
+	{
+		((Life*)pArg)->ToggleEdit();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 0.04, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
+	{
+		((Life*)pArg)->Frame();
+	}, (void*)m_pApp});
 }
 
 Menu::~Menu()
@@ -299,7 +307,7 @@ void Menu::RefreshTexts()
 {
 	{
 		std::stringstream ss;
-		ss << (m_pApp->m_bRun ? "PAUSE" : "PLAY");
+		ss << (m_pApp->m_bRun && !m_pApp->m_bFrame ? "PAUSE" : "PLAY");
 		m_pToggle->SetText(ss.str());
 	}
 	{
@@ -332,22 +340,11 @@ bool Menu::Tick()
 	return bUpdate;
 }
 
-bool Menu::HitTest(int x, int y)
+void Menu::HitTest(float fX, float fY)
 {
-	bool bResult = false;
-	if (m_pApp->m_bMenu)
-	{
-		int iWidth, iHeight;
-		SDL_GetWindowSize(m_pApp->m_pWnd, &iWidth, & iHeight);	
-		float fX = float(x * 2) / float(iWidth) - 1;
-		float fY = float(y * 2) / float(iHeight) - 1;
-		for (auto & cnt : m_lstControl)
-		{
-			if (cnt.Click(fX, -fY))
-				bResult = true;
-		}
-	}
-	return bResult;
+	for (auto & cnt : m_lstControl)
+		if (cnt.Click(fX, fY))
+			break;
 }
 
 const char* Menu::GetVertexStart()
