@@ -47,6 +47,7 @@ private:
 	SDL_Window* CreateWindow();
 	int HandleEvent(SDL_Event* pEvent);
 	void OnResize();
+	void OnMove();
 	void Refresh();
 	void Tick();
 	void Click(int iX, int iY);

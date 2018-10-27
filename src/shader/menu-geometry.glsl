@@ -8,8 +8,9 @@ layout(std430, binding = 0) buffer SSB0
 };
 
 in int g_character[];
-in float g_scale[];
+in vec2 g_scale[];
 in vec4 g_color[];
+
 out vec4 f_color;
 
 void main()
@@ -23,8 +24,8 @@ void main()
 			if (bInit)
 				EmitVertex();
 			gl_Position = vec4(
-				gl_in[0].gl_Position.x + font[g_character[0]][i][0] * g_scale[0], 
-				gl_in[0].gl_Position.y + font[g_character[0]][i][1] * g_scale[0],
+				gl_in[0].gl_Position.x + font[g_character[0]][i][0] * g_scale[0][0], 
+				gl_in[0].gl_Position.y + font[g_character[0]][i][1] * g_scale[0][1],
 				0.0, 1.0);
 			EmitVertex();
 			if (bInit)

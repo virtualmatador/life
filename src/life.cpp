@@ -1,4 +1,4 @@
-#include "main.h"
+#include "life.h"
 #include <iostream>
 
 Life::Life()
@@ -84,6 +84,9 @@ int Life::HandleEvent(SDL_Event* pEvent)
 		case SDL_WINDOWEVENT_RESIZED:
 			OnResize();
 			break;
+		case SDL_WINDOWEVENT_MOVED:
+			OnMove();
+			break;
 		}
 		break;
 	case SDL_KEYDOWN:
@@ -140,9 +143,16 @@ int Life::HandleEvent(SDL_Event* pEvent)
 void Life::OnResize()
 {
 	m_pMenu->SetWindowSize();
+	m_pMenu->SetFontScale();
 	m_pGame->SetWindowSize();
 	m_pGame->SetPointSize();
 	Refresh();
+	Refresh();
+}
+
+void Life::OnMove()
+{
+	m_pMenu->SetFontScale();
 	Refresh();
 }
 

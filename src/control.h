@@ -28,6 +28,6 @@ public:
 		void* pArg = nullptr);
 	~Control();
 	void SetText(std::string && str);
-	int Write(std::stringstream & stream);
-	bool Click(float x, float y);
+	int Write(std::stringstream & stream, float fScaleX, float fScaleY);
+	bool Click(float x, float y, float fScaleX, float fScaleY);
 };

@@ -1,205 +1,9 @@
 #include "menu.h"
-#include "main.h"
+#include "life.h"
 
 #include <sstream>
 #include <iomanip>
 #include <vector>
-
-const float Menu::m_arFont[][8][2] =
-{	
-	{ // SPACE
-		{-1.0, -1.0}
-	}, 
-	{ // !
-		{0.5, 0.0}, {0.375, 0.25}, {0.625, 0.25}, {0.5, 0.0}, {-1.0, 0.0}, {0.5, 0.5}, {0.5, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // "
-		{0.25, 1.25}, {0.25, 0.75}, {-1.0, 0.0}, {0.75, 1.25}, {0.75, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // #
-		{0.0, 0.5}, {1.0, 0.5}, {0.75, 0.25}, {0.75, 1.25}, {1.0, 1.0}, {0.0, 1.0}, {0.25, 1.25}, {0.25, 0.25}
-	}, 
-	{ // $
-		{0.0, 0.0}, {1.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, 0.0}, {0.5, 0.0}, {0.5, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // %
-		{0.0, 0.0}, {1.0, 1.5}, {-1.0, 0.0}, {0.25, 1.25}, {0.25, 1.0}, {-1.0, 0.0}, {0.75, 0.5}, {0.75, 0.25}
-	}, 
-	{ // &
-		{1.0, 0.0}, {0.5, 1.5}, {1.0, 1.0}, {0.0, 0.5}, {0.5, 0.0}, {1.0, 0.5}, {-1.0, -1.0}
-	}, 
-	{ // '
-		{0.5, 1.25}, {0.5, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // (
-		{0.75, 0.0}, {0.25, 0.5}, {0.25, 1.0}, {0.75, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // )
-		{0.25, 0.0}, {0.75, 0.5}, {0.75, 1.0}, {0.25, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // *
-		{0.0, 0.0}, {0.5, 1.5}, {1.0, 0.0}, {0.0, 1.0}, {1.0, 1.0}, {0.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // +
-		{0.125, 0.75}, {0.875, 0.75}, {-1.0, 0.0}, {0.5, 1.125}, {0.5, 0.375}, {-1.0, -1.0}
-	}, 
-	{ // ,
-		{0.25, 0.0}, {0.5, 0.25}, {-1.0, -1.0}
-	}, 
-	{ // -
-		{0.25, 0.75}, {0.75, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // .
-		{0.375, 0.0}, {0.5, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // /
-		{0.0, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // 0
-		{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.5}, {0.0, 1.5}, {0.0, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // 1
-		{0.5, 0.0}, {0.5, 1.5}, {0.375, 1.25}, {-1.0, -1.0}
-	}, 
-	{ // 2
-		{0.0, 1.5}, {1.0, 1.5}, {1.0, 0.875}, {0.0, 0.625}, {0.0, 0.0}, {1.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // 3
-		{0.0, 1.5}, {1.0, 1.5}, {1.0, 0.0}, {0.0, 0.0}, {-1.0, 0.0}, {0.0, 0.75}, {1.0, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // 4
-		{0.0, 1.5}, {0.0, 0.75}, {1.0, 0.75}, {-1.0, 0.0}, {1.0, 1.5}, {1.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // 5
-		{0.0, 0.0}, {1.0, 0.0}, {1.0, 0.75}, {0.0, 0.875}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // 6
-		{0.0, 1.5}, {0.0, 0.0}, {1.0, 0.0}, {1.0, 0.625}, {0.0, 0.875}, {-1.0, -1.0}
-	}, 
-	{ // 7
-		{0.0, 1.5}, {1.0, 1.5}, {1.0, 0.75}, {0.5, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // 8
-		{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.5}, {0.0, 1.5}, {0.0, 0.0}, {-1.0, 0.0}, {0.0, 0.75}, {1.0, 0.75}
-	}, 
-	{ // 9
-		{1.0, 0.0}, {1.0, 1.5}, {0.0, 1.5}, {0.0, 0.875}, {1.0, 0.625}, {-1.0, -1.0}
-	},
-	{ // :
-		{0.5, 1.125}, {0.5, 0.875}, {-1.0, 0.0}, {0.5, 0.625}, {0.5, 0.375}, {-1.0, -1.0}
-	}, 
-	{  // ;
-		{0.5, 1.125}, {0.5, 0.875}, {-1.0, 0.0}, {0.5, 0.625}, {0.125, 0.25}, {-1.0, -1.0}
-	}, 
-	{// <
-		{0.75, 0.0}, {0.25, 0.75}, {0.75, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // =
-		{0.125, 0.5}, {0.875, 0.5}, {-1.0, 0.0}, {0.125, 1.0}, {0.875, 1.0}, {-1.0, -1.0}
-	}, 
-	{ // >
-		{0.25, 0.0}, {0.75, 0.75}, {0.25, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // ? 
-		{0.0, 1.0}, {0.5, 1.5}, {1.0, 1.0}, {0.5, 0.5}, {-1.0, 0.0}, {0.5, 0.125}, {0.5, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // e
-		{1.0, 0.5}, {0.5, 0.0}, {0.0, 0.5}, {0.0, 1.0}, {0.5, 1.5}, {1.0, 1.0}, {0.5, 0.5}, {0.375, 0.75}
-	}, 
-	{ // A
-		{0.0, 0.0}, {0.0, 1.0}, {0.5, 1.5}, {1.0, 1.0}, {1.0, 0.0}, {-1.0, 0.0}, {0.0, 0.5}, {1.0, 0.5}
-	}, 
-	{ // B
-		{0.0, 0.0}, {0.0, 1.5}, {0.5, 1.5}, {1.0, 1.25}, {0.5, 0.75}, {1.0, 0.25}, {0.5, 0.0}, {0.0, 0.0}
-	}, 
-	{ // C
-		{1.0, 0.0}, {0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // D
-		{0.0, 0.0}, {0.0, 1.5}, {0.5, 1.5}, {1.0, 1.0}, {1.0, 0.5}, {0.5, 0.0}, {0.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // E
-		{1.0, 0.0}, {0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, 0.0}, {0.0, 0.75}, {0.75, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // F
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, 0.0}, {0.0, 0.75}, {0.75, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // G
-		{0.75, 0.75}, {1.0, 0.5}, {1.0, 0.0}, {0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // H
-		{0.0, 0.0}, {0.0, 1.5}, {-1.0, 0.0}, {0.0, 0.75}, {1.0, 0.75}, {-1.0, 0.0}, {1.0, 1.5}, {1.0, 0.0}
-	}, 
-	{ // I
-		{0.0, 0.0}, {1.0, 0.0}, {-1.0, 0.0}, {0.5, 0.0}, {0.5, 1.5}, {-1.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}
-	}, 
-	{ // J
-		{0.0, 0.5}, {0.5, 0.0}, {1.0, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // K
-		{0.0, 0.0}, {0.0, 1.5}, {-1.0, 0.0}, {1.0, 1.5}, {0.0, 0.75}, {0.75, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // L
-		{1.0, 0.0}, {0.0, 0.0}, {0.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // M
-		{0.0, 0.0}, {0.0, 1.5}, {0.5, 1.0}, {1.0, 1.5}, {1.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // N
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // O
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {1.0, 0.0}, {0.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // P
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {1.0, 0.75}, {0.0, 0.625}, {-1.0, -1.0}
-	}, 
-	{ // Q
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {1.0, 0.5}, {0.0, 0.0}, {-1.0, 0.0}, {0.5, 0.5}, {1.0, 0.0}
-	}, 
-	{ // R
-		{0.0, 0.0}, {0.0, 1.5}, {1.0, 1.5}, {1.0, 0.75}, {0.0, 0.625}, {-1.0, 0.0}, {0.5, 0.625}, {1.0, 0.0}
-	}, 
-	{ // S
-		{0.0, 0.25}, {0.25, 0.0}, {1.0, 0.0}, {1.0, 0.625}, {0.0, 0.875}, {0.0, 1.5}, {0.75, 1.5}, {1.0, 1.25}
-	}, 
-	{ // T
-		{0.0, 1.5}, {1.0, 1.5}, {-1.0, 0.0}, {0.5, 1.5}, {0.5, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // U
-		{0.0, 1.5}, {0.0, 0.25}, {0.5, 0.0}, {1.0, 0.25}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // V
-		{0.0, 1.5}, {0.5, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // W
-		{0.0, 1.5}, {0.25, 0.0}, {0.5, 0.5}, {0.75, 0.0}, {1.0, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // X
-		{0.0, 0.0}, {1.0, 1.5}, {-1.0, 0.0}, {0.0, 1.5}, {1.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // Y
-		{0.0, 1.5}, {0.5, 0.75}, {1.0, 1.5}, {-1.0, 0.0}, {0.5, 0.75}, {0.5, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // Z
-		{0.0, 1.5}, {1.0, 1.5}, {0.0, 0.0}, {1.0, 0.0}, {-1.0, 0.0}, {0.25, 0.75}, {0.75, 0.75}, {-1.0, -1.0}
-	},
-	{ // [
-		{0.75, 0.0}, {0.25, 0.0}, {0.25, 1.5}, {0.75, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // \
-		{0.0, 1.5}, {1.0, 0.0}, {-1.0, -1.0}
-	}, 
-	{ // ]
-		{0.25, 0.0}, {0.75, 0.0}, {0.75, 1.5}, {0.25, 1.5}, {-1.0, -1.0}
-	}, 
-	{ // ^
-		{0.25, 0.75}, {0.5, 1.5}, {0.75, 0.75}, {-1.0, -1.0}
-	}, 
-	{ // _
-		{0.0, 0.0}, {1.0, 0.0}, {-1.0, -1.0}
-	},
-};
 
 Menu::Menu(Life* pApp)
 	: Context<Menu>{pApp}
@@ -208,6 +12,8 @@ Menu::Menu(Life* pApp)
 	, m_iCharCount{0}
 	, m_MenuUpdate{std::chrono::nanoseconds(0)}
 	, m_dSpeed{0.0}
+	, m_fScaleX{0}
+	, m_fScaleY{0}
 {
 	glGenVertexArrays(1, &m_iVertexArray);
 	if (m_iVertexArray == 0)
@@ -217,8 +23,8 @@ Menu::Menu(Life* pApp)
 	if (m_iFontBuffer == 0)
 		throw "glGenBuffers";
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_iFontBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Menu::m_arFont),
-		Menu::m_arFont, GL_STATIC_COPY);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(arFont),
+		arFont, GL_STATIC_COPY);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_iFontBuffer);
 	glGenBuffers(1, &m_iTextBuffer);
@@ -229,45 +35,45 @@ Menu::Menu(Life* pApp)
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-	int stride = 6 * sizeof(GLfloat) + sizeof(GLint);
+	int stride = 7 * sizeof(GLfloat) + sizeof(GLint);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLfloat)));
-	glVertexAttribIPointer(2, 1, GL_INT, stride, (void*)(3 * sizeof(GLfloat)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(GLfloat) + sizeof(GLint)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLfloat)));
+	glVertexAttribIPointer(2, 1, GL_INT, stride, (void*)(4 * sizeof(GLfloat)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)(4 * sizeof(GLfloat) + sizeof(GLint)));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glLineWidth(2);
 
-	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 0.04});
-	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 0.04});
-	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 0.03, 0.8, 0.2, 0.2, "UP", [](void* pArg)
+	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 1.5});
+	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 1.5});
+	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 1.0, 0.8, 0.2, 0.2, "UP", [](void* pArg)
 	{
 		((Life*)pArg)->SpeedUp();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 0.03, 0.2, 8.0, 0.2, "DOWN", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 1.0, 0.2, 8.0, 0.2, "DOWN", [](void* pArg)
 	{
 		((Life*)pArg)->SpeedDown();
 	}, (void*)m_pApp});
-	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{-0.9, 0.9, 0.04, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
+	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{-0.9, 0.9, 1.5, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleGame();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 0.04, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 1.5, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleMenu();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 0.04, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 1.5, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
 	{
 		((Life*)pArg)->Load();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 0.04, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 1.5, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
 	{
 		((Life*)pArg)->Save();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 0.04, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 1.5, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleEdit();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 0.04, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 1.5, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
 	{
 		((Life*)pArg)->Frame();
 	}, (void*)m_pApp});
@@ -287,15 +93,29 @@ SDL_Window* Menu::GetWindow()
 	return m_pApp->m_pWnd;
 }
 
+void Menu::SetFontScale()
+{
+	int iWidth, iHeight;
+	SDL_GetWindowSize(GetWindow(), &iWidth, &iHeight);
+	float fDpiX, fDpiY;
+	if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(GetWindow()), nullptr, &fDpiX, &fDpiY) < 0)
+	{
+		fDpiX = 72;
+		fDpiY = 72;
+	}
+	m_fScaleX = fDpiX / iWidth / 3;
+	m_fScaleY = fDpiY / iHeight / 2;
+}
+
 void Menu::UploadTexts()
 {
 	RefreshTexts();
 	m_iCharCount = 0;
 	std::stringstream arData(std::ios::in | std::ios::out | std::ios::binary);
 	for (auto & cnt : m_lstControl)
-		m_iCharCount += cnt.Write(arData);
+		m_iCharCount += cnt.Write(arData, m_fScaleX, m_fScaleY);
 	arData.seekg(0, std::ios::beg);
-	std::vector<unsigned char> vData(m_iCharCount * (6 * sizeof(GLfloat) + sizeof(GLint)));
+	std::vector<unsigned char> vData(m_iCharCount * (7 * sizeof(GLfloat) + sizeof(GLint)));
 	arData.read((char*)vData.data(), vData.size());
 	glBindBuffer(GL_ARRAY_BUFFER, m_iTextBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vData.size(),
@@ -343,7 +163,7 @@ bool Menu::Tick()
 void Menu::HitTest(float fX, float fY)
 {
 	for (auto & cnt : m_lstControl)
-		if (cnt.Click(fX, fY))
+		if (cnt.Click(fX, fY, m_fScaleX, m_fScaleY))
 			break;
 }
 

@@ -25,14 +25,16 @@ void Control::SetText(std::string && str)
 	m_Text = str;
 }
 
-int Control::Write(std::stringstream & stream)
+int Control::Write(std::stringstream & stream, float fScaleX, float fScaleY)
 {
 	for (int i = 0; i < m_Text.size(); ++i)
 	{
-		float fData = m_fX + m_fScalse * i;
+		float fData = m_fX + m_fScalse * fScaleX * i;
 		stream.write((char*)&fData, sizeof(GLfloat));
 		stream.write((char*)&m_fY, sizeof(GLfloat));
-		fData = m_fScalse * 0.7;
+		fData = m_fScalse * fScaleX * 0.66;
+		stream.write((char*)&fData, sizeof(GLfloat));
+		fData = m_fScalse * fScaleY * 0.66;
 		stream.write((char*)&fData, sizeof(GLfloat));
 		int iData = m_Text[i] - 32;
 		stream.write((char*)&iData, sizeof(GLint));
@@ -41,11 +43,11 @@ int Control::Write(std::stringstream & stream)
 	return m_Text.size();
 }
 
-bool Control::Click(float x, float y)
+bool Control::Click(float x, float y, float fScaleX, float fScaleY)
 {
 	if (m_OnClick &&
-		x > m_fX && x < m_fX + m_Text.size() * m_fScalse &&
-		y > m_fY && y < m_fY + 1.5 * m_fScalse)
+		x > m_fX && x < m_fX + m_Text.size() * m_fScalse * fScaleX &&
+		y > m_fY && y < m_fY + m_Text.size() * m_fScalse * fScaleY * m_fScalse)
 	{
 		m_OnClick(m_pArg);
 		return true;

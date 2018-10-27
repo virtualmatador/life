@@ -2,6 +2,7 @@
 
 uniform int width;
 uniform int height;
+
 layout(std430, binding = 0) buffer SSB0
 {
 	int Cells[];
@@ -10,6 +11,7 @@ layout(std430, binding = 1) buffer SSB1
 {
 	int NewCells[];
 };
+
 flat out vec4 color;
 
 void main()

@@ -16,6 +16,8 @@ extern const char _binary_src_shader_menu_geometry_glsl_start[];
 extern const char _binary_src_shader_menu_fragment_glsl_end[];
 extern const char _binary_src_shader_menu_fragment_glsl_start[];
 
+extern const float arFont[64][8][2];
+
 class Menu: public Context<Menu>
 {
 private:
@@ -26,9 +28,11 @@ private:
 	double m_dSpeed = 0;
 	std::chrono::steady_clock::time_point m_MenuUpdate;
 
-	static const float m_arFont[][8][2];
 	int m_iCharCount;
 	std::list<Control> m_lstControl;
+
+	float m_fScaleX;
+	float m_fScaleY;
 
 	Control* m_pToggle;
 	Control* m_pRealSpeed;
@@ -39,6 +43,7 @@ public:
 	~Menu();
 
 	SDL_Window* GetWindow();
+	void SetFontScale();
 	void UploadTexts();
 	bool Tick();
 	void HitTest(float fX, float fY);

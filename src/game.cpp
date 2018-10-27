@@ -1,5 +1,5 @@
 #include "game.h"
-#include "main.h"
+#include "life.h"
 
 #include "file-dialog.h"
 

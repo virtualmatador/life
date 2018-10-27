@@ -1,11 +1,12 @@
 #version 450
 
 in vec2 v_xy;
-in float v_scale;
+in vec2 v_scale;
 in int v_character;
 in vec3 v_color;
+
 out int g_character;
-out float g_scale;
+out vec2 g_scale;
 out vec4 g_color;
 
 void main()
