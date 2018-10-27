@@ -1,10 +1,10 @@
 #include "control.h"
 
-Control::Control(GLfloat x, GLfloat y, GLfloat scale,
+Control::Control(int iX, int iY, GLfloat scale,
 		GLfloat red, GLfloat green, GLfloat blue,
 		const char* szText,	void (*OnClick)(void*), void* pArg)
-		: m_fX{x}
-		, m_fY{y}
+		: m_iX{iX}
+		, m_iY{iY}
 		, m_fScalse{scale}
 {
 	if (szText)
@@ -27,14 +27,18 @@ void Control::SetText(std::string && str)
 
 int Control::Write(std::stringstream & stream, float fScaleX, float fScaleY)
 {
+	float fX, fY;
+	GetTopLeft(&fX, &fY, fScaleX, fScaleY);
 	for (int i = 0; i < m_Text.size(); ++i)
 	{
-		float fData = m_fX + m_fScalse * fScaleX * i;
+		float fData;
+		fData = fX + m_fScalse * fScaleX * 0.33 / 2.0 + i * m_fScalse * fScaleX;
 		stream.write((char*)&fData, sizeof(GLfloat));
-		stream.write((char*)&m_fY, sizeof(GLfloat));
-		fData = m_fScalse * fScaleX * 0.66;
+		fData = fY - m_fScalse * fScaleY * 0.33 / 2.0;
 		stream.write((char*)&fData, sizeof(GLfloat));
-		fData = m_fScalse * fScaleY * 0.66;
+		fData = m_fScalse * fScaleX * 0.67;
+		stream.write((char*)&fData, sizeof(GLfloat));
+		fData = m_fScalse * fScaleY * 0.67;
 		stream.write((char*)&fData, sizeof(GLfloat));
 		int iData = m_Text[i] - 32;
 		stream.write((char*)&iData, sizeof(GLint));
@@ -43,11 +47,19 @@ int Control::Write(std::stringstream & stream, float fScaleX, float fScaleY)
 	return m_Text.size();
 }
 
+void Control::GetTopLeft(float* pfX, float* pfY, float fScaleX, float fScaleY)
+{
+	*pfX = m_iX * fScaleX - 0.95;
+	*pfY = 0.95 - m_iY * fScaleY;
+}
+
 bool Control::Click(float x, float y, float fScaleX, float fScaleY)
 {
+	float fX, fY;
+	GetTopLeft(&fX, &fY, fScaleX, fScaleY);
 	if (m_OnClick &&
-		x > m_fX && x < m_fX + m_Text.size() * m_fScalse * fScaleX &&
-		y > m_fY && y < m_fY + m_Text.size() * m_fScalse * fScaleY * m_fScalse)
+		x > fX && x < fX + m_Text.size() * m_fScalse * fScaleX &&
+		y < fY && y > fY - m_fScalse * fScaleY)
 	{
 		m_OnClick(m_pArg);
 		return true;

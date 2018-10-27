@@ -11,23 +11,22 @@ class Control
 {
 private:
 	std::string m_Text;
-	GLfloat m_fX;
-	GLfloat m_fY;
+	int m_iX;
+	int m_iY;
 	GLfloat m_fScalse;
 	GLfloat m_fColor[3];
 	void (*m_OnClick)(void*);
 	void* m_pArg;
 
 public:
-	Control(GLfloat x, GLfloat y, GLfloat scale,
-		GLfloat red = 1.0f,
-		GLfloat green = 1.0f,
-		GLfloat blue = 1.0f,
+	Control(int iX, int iY, GLfloat scale,
+		GLfloat red, GLfloat green, GLfloat blue,
 		const char* szText = nullptr,
 		void (*OnClick)(void*) = nullptr,
 		void* pArg = nullptr);
 	~Control();
 	void SetText(std::string && str);
 	int Write(std::stringstream & stream, float fScaleX, float fScaleY);
+	void GetTopLeft(float* pfX, float* pfY, float fScaleX, float fScaleY);
 	bool Click(float x, float y, float fScaleX, float fScaleY);
 };

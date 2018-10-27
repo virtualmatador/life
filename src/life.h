@@ -31,6 +31,7 @@ public:
 public:
 	Life();
 	~Life();
+	void GetDpi(float* pfDpiX, float* pfDpiY);
 	int Run(int argc, char* argv[]);
 
 	void ToggleGame();
@@ -44,7 +45,7 @@ public:
 	void Stop();
 
 private:
-	SDL_Window* CreateWindow();
+	void CreateWindow();
 	int HandleEvent(SDL_Event* pEvent);
 	void OnResize();
 	void OnMove();

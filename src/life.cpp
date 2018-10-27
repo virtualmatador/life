@@ -16,24 +16,27 @@ Life::Life()
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw "SDL_INIT";
-	if (!(m_pWnd = CreateWindow()))
-		throw "CreateWindow";
+	CreateWindow();
 	if (!(m_pMenu = new Menu(this)))
 		throw "SDL_GL_CreateContext";
 	if (!(m_pGame = new Game(this)))
 		throw "SDL_GL_CreateContext";
-	OnResize();
 }
 
-SDL_Window* Life::CreateWindow()
+void Life::CreateWindow()
 {
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
-		return nullptr;
-	return SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+		throw "SDL_GL_SetAttribute";
+	m_pWnd = SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	if (!m_pWnd)
+		throw "SDL_CreateWindow";
+	float fDpiX, fDpiY;
+	GetDpi(&fDpiX, &fDpiY);
+	SDL_SetWindowSize(m_pWnd, fDpiX / 6 * 40, fDpiY / 4 * 20);
 }
 
 
@@ -43,6 +46,15 @@ Life::~Life()
 	delete m_pMenu;
 	SDL_DestroyWindow(m_pWnd);
 	SDL_Quit();
+}
+
+void Life::GetDpi(float* pfDpiX, float* pfDpiY)
+{
+	if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(m_pWnd), nullptr, pfDpiX, pfDpiY) < 0)
+	{
+		*pfDpiX = 96;
+		*pfDpiY = 96;
+	}
 }
 
 int Life::Run(int argc, char* argv[])

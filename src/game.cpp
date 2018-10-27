@@ -78,6 +78,8 @@ bool Game::Load()
 
 bool Game::Save()
 {
+	if (m_iCx <= 0 || m_iCy <= 0)
+		return false;
 	std::ofstream img(GetFileName(true));
 	if (!img)
 		return false;
@@ -144,11 +146,14 @@ bool Game::Tick()
 
 void Game::Edit(float fX, float fY)
 {
-	int iX = (fX + 1.0) / 2.0 * m_iCx;
-	int iY = (1.0 - fY) / 2.0 * m_iCy;
-	std::vector<GLint> vCell = Download();
-	vCell[iY * m_iCx + iX] = !vCell[iY * m_iCx + iX];
-	Upload(vCell);
+	if (m_iCx > 0 && m_iCy > 0)
+	{
+		int iX = (fX + 1.0) / 2.0 * m_iCx;
+		int iY = (1.0 - fY) / 2.0 * m_iCy;
+		std::vector<GLint> vCell = Download();
+		vCell[iY * m_iCx + iX] = !vCell[iY * m_iCx + iX];
+		Upload(vCell);
+	}
 }
 
 void Game::Upload(std::vector<GLint> vCell)

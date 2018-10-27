@@ -43,40 +43,48 @@ Menu::Menu(Life* pApp)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glLineWidth(2);
 
-	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 1.0});
-	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 1.0});
-	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 1.0, 0.8, 0.2, 0.2, "UP", [](void* pArg)
-	{
-		((Life*)pArg)->SpeedUp();
-	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{-0.26, -0.84, 1.0, 0.2, 8.0, 0.2, "DOWN", [](void* pArg)
-	{
-		((Life*)pArg)->SpeedDown();
-	}, (void*)m_pApp});
-	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{-0.9, 0.9, 1.0, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
-	{
-		((Life*)pArg)->ToggleGame();
-	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 1.0, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
-	{
-		((Life*)pArg)->ToggleMenu();
-	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 1.0, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0, 0, 1.0, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
 	{
 		((Life*)pArg)->Load();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 1.0, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0, 1, 1.0, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
 	{
 		((Life*)pArg)->Save();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 1.0, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
+	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{6, 0, 1.0, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
 	{
-		((Life*)pArg)->ToggleEdit();
+		((Life*)pArg)->ToggleGame();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 1.0, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{6, 1, 1.0, 1.0, 1.0, 1.0, "STEP", [](void* pArg)
 	{
 		((Life*)pArg)->Frame();
 	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{12, 0, 1.0, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
+	{
+		((Life*)pArg)->ToggleEdit();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{12, 1, 1.0, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
+	{
+		((Life*)pArg)->ToggleMenu();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{18, 0, 1.0, 1.0, 1.0, 1.0, "FAST", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedUp();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{18, 1, 1.0, 1.0, 1.0, 1.0, "SLOW", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedDown();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{24, 0, 1.0, 0.75, 0.75, 0.75, "REAL:", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedUp();
+	}, (void*)m_pApp});
+	m_lstControl.insert(m_lstControl.end(),{24, 1, 1.0, 0.75, 0.75, 0.75, "GOAL:", [](void* pArg)
+	{
+		((Life*)pArg)->SpeedDown();
+	}, (void*)m_pApp});
+	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {30, 0, 1.0, 0.75, 0.75, 0.75});
+	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{30, 1, 1.0, 0.75, 0.75, 0.75});
 }
 
 Menu::~Menu()
@@ -98,13 +106,9 @@ void Menu::SetFontScale()
 	int iWidth, iHeight;
 	SDL_GetWindowSize(GetWindow(), &iWidth, &iHeight);
 	float fDpiX, fDpiY;
-	if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(GetWindow()), nullptr, &fDpiX, &fDpiY) < 0)
-	{
-		fDpiX = 96;
-		fDpiY = 96;
-	}
-	m_fScaleX = fDpiX / iWidth / 3;
-	m_fScaleY = fDpiY / iHeight / 2;
+	m_pApp->GetDpi(&fDpiX, & fDpiY);
+	m_fScaleX = fDpiX / 6 * 2 / iWidth;
+	m_fScaleY = fDpiY / 4 * 2 / iHeight;
 }
 
 void Menu::UploadTexts()
@@ -127,17 +131,17 @@ void Menu::RefreshTexts()
 {
 	{
 		std::stringstream ss;
-		ss << (m_pApp->m_bRun && !m_pApp->m_bFrame ? "PAUSE" : "PLAY");
+		ss << (m_pApp->m_bRun && !m_pApp->m_bFrame ? "STOP" : "PLAY");
 		m_pToggle->SetText(ss.str());
 	}
 	{
 		std::stringstream ss;
-		ss << "SPEED:" << m_dSpeed;
+		ss << m_dSpeed;
 		m_pRealSpeed->SetText(ss.str());
 	}
 	{
 		std::stringstream ss;
-		ss << "EXPECT:" << (m_pApp->m_iDelay > 0ll ? double(1000.0 * 1000.0) / m_pApp->m_iDelay : 0ll);
+		ss << (m_pApp->m_iDelay > 0ll ? double(1000.0 * 1000.0) / m_pApp->m_iDelay : (10.0 * 1000.0 * 1000.0));
 		m_pNominalSpeed->SetText(ss.str());
 	}
 }
