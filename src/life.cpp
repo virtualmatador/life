@@ -30,7 +30,7 @@ void Life::CreateWindow()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
 		throw "SDL_GL_SetAttribute";
-	m_pWnd = SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+	m_pWnd = SDL_CreateWindow("Life", 0, 0,
 		0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (!m_pWnd)
 		throw "SDL_CreateWindow";
