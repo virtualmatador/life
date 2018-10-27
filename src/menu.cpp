@@ -43,8 +43,8 @@ Menu::Menu(Life* pApp)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glLineWidth(2);
 
-	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 1.5});
-	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 1.5});
+	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {-0.8, -0.7, 1.0});
+	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{-0.84, -0.78, 1.0});
 	m_lstControl.insert(m_lstControl.end(),{-0.22, -0.7, 1.0, 0.8, 0.2, 0.2, "UP", [](void* pArg)
 	{
 		((Life*)pArg)->SpeedUp();
@@ -53,27 +53,27 @@ Menu::Menu(Life* pApp)
 	{
 		((Life*)pArg)->SpeedDown();
 	}, (void*)m_pApp});
-	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{-0.9, 0.9, 1.5, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
+	m_pToggle = &*m_lstControl.insert(m_lstControl.end(),{-0.9, 0.9, 1.0, 1.0, 1.0, 1.0, "PLAY", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleGame();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 1.5, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{-0.6, 0.9, 1.0, 1.0, 1.0, 1.0, "HIDE", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleMenu();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 1.5, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.9, 1.0, 1.0, 1.0, 1.0, "LOAD", [](void* pArg)
 	{
 		((Life*)pArg)->Load();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 1.5, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.9, 1.0, 1.0, 1.0, 1.0, "SAVE", [](void* pArg)
 	{
 		((Life*)pArg)->Save();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 1.5, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.3, 0.7, 1.0, 1.0, 1.0, 1.0, "EDIT", [](void* pArg)
 	{
 		((Life*)pArg)->ToggleEdit();
 	}, (void*)m_pApp});
-	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 1.5, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
+	m_lstControl.insert(m_lstControl.end(),{0.6, 0.7, 1.0, 1.0, 1.0, 1.0, "FRAME", [](void* pArg)
 	{
 		((Life*)pArg)->Frame();
 	}, (void*)m_pApp});
@@ -100,8 +100,8 @@ void Menu::SetFontScale()
 	float fDpiX, fDpiY;
 	if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(GetWindow()), nullptr, &fDpiX, &fDpiY) < 0)
 	{
-		fDpiX = 72;
-		fDpiY = 72;
+		fDpiX = 96;
+		fDpiY = 96;
 	}
 	m_fScaleX = fDpiX / iWidth / 3;
 	m_fScaleY = fDpiY / iHeight / 2;

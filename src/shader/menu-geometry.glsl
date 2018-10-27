@@ -17,9 +17,9 @@ void main()
 {
 	f_color = g_color[0];
 	bool bInit = false;
-	for (int i = 0; i < 8 && (font[g_character[0]][i][0] > -0.5 || font[g_character[0]][i][1] > -0.5); ++i)
+	for (int i = 0; i < 8 && (font[g_character[0]][i][0] > -2.5 || font[g_character[0]][i][1] > -2.5); ++i)
 	{
-		if (font[g_character[0]][i][0] > -0.5 && font[g_character[0]][i][1] > -0.5)
+		if (font[g_character[0]][i][0] > -1.5 && font[g_character[0]][i][1] > -1.5)
 		{
 			if (bInit)
 				EmitVertex();
