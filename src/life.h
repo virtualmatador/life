@@ -31,7 +31,7 @@ public:
 public:
 	Life();
 	~Life();
-	void GetDpi(float* pfDpiX, float* pfDpiY);
+	void GetFontSize(float* pfFontX, float* pfFontY);
 	int Run(int argc, char* argv[]);
 
 	void ToggleGame();

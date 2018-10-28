@@ -30,13 +30,12 @@ void Life::CreateWindow()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
 		throw "SDL_GL_SetAttribute";
-	m_pWnd = SDL_CreateWindow("Life", 0, 0,
-		0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	float fFontX, fFontY;
+	GetFontSize(&fFontX, &fFontY);
+	m_pWnd = SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		fFontX * 40, fFontY * 20, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (!m_pWnd)
 		throw "SDL_CreateWindow";
-	float fDpiX, fDpiY;
-	GetDpi(&fDpiX, &fDpiY);
-	SDL_SetWindowSize(m_pWnd, fDpiX / 6 * 40, fDpiY / 4 * 20);
 }
 
 
@@ -48,13 +47,16 @@ Life::~Life()
 	SDL_Quit();
 }
 
-void Life::GetDpi(float* pfDpiX, float* pfDpiY)
+void Life::GetFontSize(float* pfFontX, float* pfFontY)
 {
-	if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(m_pWnd), nullptr, pfDpiX, pfDpiY) < 0)
+	int iDisplay  = (m_pWnd ? SDL_GetWindowDisplayIndex(m_pWnd) : 0);
+	if (SDL_GetDisplayDPI(iDisplay, nullptr, pfFontX, pfFontY) < 0)
 	{
-		*pfDpiX = 96;
-		*pfDpiY = 96;
+		*pfFontX = 180.0f;
+		*pfFontY = 180.0f;
 	}
+	*pfFontX /= 9.0f;
+	*pfFontY /= 6.0f;
 }
 
 int Life::Run(int argc, char* argv[])

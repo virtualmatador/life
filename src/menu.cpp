@@ -105,10 +105,10 @@ void Menu::SetFontScale()
 {
 	int iWidth, iHeight;
 	SDL_GetWindowSize(GetWindow(), &iWidth, &iHeight);
-	float fDpiX, fDpiY;
-	m_pApp->GetDpi(&fDpiX, & fDpiY);
-	m_fScaleX = fDpiX / 6 * 2 / iWidth;
-	m_fScaleY = fDpiY / 4 * 2 / iHeight;
+	float fFontX, fFontY;
+	m_pApp->GetFontSize(&fFontX, &fFontY);
+	m_fScaleX = fFontX * 2.0f / iWidth;
+	m_fScaleY = fFontY * 2.0f / iHeight;
 }
 
 void Menu::UploadTexts()
