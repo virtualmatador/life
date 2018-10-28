@@ -16,8 +16,10 @@ clean:
 	$(RM) -r $(TARGET)
 
 install:
+		sudo cp $(TARGET) /usr/local/sbin/
 
 uninstall:
+		sudo $(RM) /usr/local/sbin/$(TARGET)
 
 define OBJECT_RULE
 build/$(shell $(CC) -MM $(1) | sed ':a;N;s/ \\\n / /g')
