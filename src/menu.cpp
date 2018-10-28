@@ -149,7 +149,7 @@ bool Menu::Tick()
 {
 	int64_t duration = (m_pApp->m_frameTime - m_MenuUpdate).count() / 1000ll;
 	bool bUpdate = m_pApp->m_bRefresh || duration > (500ll * 1000ll);
-	if (m_pApp->m_bRun && bUpdate)
+	if (!m_pApp->m_bRefresh && m_pApp->m_bRun && bUpdate)
 	{
 		m_MenuUpdate = m_pApp->m_frameTime;
 		m_dSpeed = m_pApp->m_FrameCount == 0 ? 0 : double(m_pApp->m_FrameCount) * (1000.0 * 1000.0) / duration;

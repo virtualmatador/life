@@ -123,7 +123,7 @@ bool Game::Tick()
 {
 	int64_t duration = (m_pApp->m_frameTime - m_GameUpdate).count() / 1000ll;
 	bool bUpdate = m_pApp->m_bRefresh || duration > (50ll * 1000ll);
-	if (m_pApp->m_bRun)
+	if (!m_pApp->m_bRefresh && m_pApp->m_bRun)
 	{
 		m_bSwap = !m_bSwap;
 		++m_pApp->m_FrameCount;
