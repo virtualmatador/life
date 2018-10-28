@@ -140,7 +140,7 @@ int Life::HandleEvent(SDL_Event* pEvent)
 			break;
 		}
 		break;
-	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP:
 		switch (pEvent->button.button)
 		{
 		case SDL_BUTTON_LEFT:
