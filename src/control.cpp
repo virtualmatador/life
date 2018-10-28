@@ -49,8 +49,8 @@ int Control::Write(std::stringstream & stream, float fScaleX, float fScaleY)
 
 void Control::GetTopLeft(float* pfX, float* pfY, float fScaleX, float fScaleY)
 {
-	*pfX = m_iX * fScaleX - 0.95;
-	*pfY = 0.95 - m_iY * fScaleY;
+	*pfX = +m_iX * fScaleX - 1.0 + 0.5 * fScaleX;
+	*pfY = -m_iY * fScaleY + 1.0 - 0.5 * fScaleY;
 }
 
 bool Control::Click(float x, float y, float fScaleX, float fScaleY)
