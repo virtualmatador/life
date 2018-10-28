@@ -1,7 +1,5 @@
 #pragma once
 
-//#include "main.h"
-
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>

@@ -12,7 +12,7 @@ Life::Life()
 	, m_bRefresh{false}
 	, m_frameTime{std::chrono::nanoseconds(0)}
 	, m_FrameCount{0}
-	, m_iDelay{33333}
+	, m_iDelay{100000}
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw "SDL_INIT";
