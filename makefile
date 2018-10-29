@@ -1,11 +1,14 @@
 TARGET = life
 LIBS = -lSDL2 -lGL
 
-CC = g++
+DEBUG = $(if $(shell git symbolic-ref --short HEAD | grep master), , -g)
 SOURCES = $(wildcard src/*.cpp)
 OBJECTS = $(patsubst src/%.cpp, build/%.o, $(SOURCES))
 SHADERS = $(wildcard src/shader/*.glsl)
+
+CC = g++
 COMMA = ,
+
 .PHONY: clean, install, uninstall
 
 $(TARGET): $(OBJECTS) $(SHADERS)
@@ -24,6 +27,6 @@ uninstall:
 define OBJECT_RULE
 build/$(shell $(CC) -MM $(1) | sed ':a;N;s/ \\\n / /g')
 	mkdir -p build/
-	$$(CC) -g -c -o $$@ $$<
+	$$(CC) $(DEBUG) -c -o $$@ $$<
 endef
 $(foreach src, $(SOURCES), $(eval $(call OBJECT_RULE,$(src))))
