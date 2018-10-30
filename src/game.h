@@ -39,6 +39,7 @@ public:
 	void Edit(float fX, float fY);
 	void Upload(std::vector<GLint> vCell);
 	std::vector<GLint> Download();
+	bool HasData();
 	const char* GetVertexStart();
 	const char* GetVertexEnd();
 	const char* GetGeometryStart();

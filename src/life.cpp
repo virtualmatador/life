@@ -172,6 +172,10 @@ void Life::OnMove()
 
 void Life::Refresh()
 {
+	if (m_bEdit)
+		SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR));
+	else
+		SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
 	m_bRefresh = true;
 	Tick();
 	m_bRefresh = false;
@@ -210,7 +214,7 @@ void Life::ToggleGame()
 	}
 	else
 	{
-		if (!m_bEdit)
+		if (!m_bEdit && m_pGame->HasData())
 		{
 			Refresh();
 			m_bRun = true;
@@ -281,7 +285,7 @@ void Life::Save()
 
 void Life::Frame()
 {
-	if (!m_bEdit)
+	if (!m_bEdit && m_pGame->HasData())
 	{
 		m_frameTime = std::chrono::steady_clock::now();
 		m_bRun = true;

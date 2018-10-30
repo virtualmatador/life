@@ -178,6 +178,11 @@ std::vector<GLint> Game::Download()
 	return vCell;
 }
 
+bool Game::HasData()
+{
+	return m_iCx > 0 && m_iCy > 0;
+}
+
 const char* Game::GetVertexStart()
 {
 	return _binary_src_shader_game_vertex_glsl_start;
