@@ -85,6 +85,8 @@ Menu::Menu(Life* pApp)
 	}, (void*)m_pApp});
 	m_pRealSpeed = &*m_lstControl.insert(m_lstControl.end(), {30, 0, 1.0, 0.75, 0.75, 0.75});
 	m_pNominalSpeed = &*m_lstControl.insert(m_lstControl.end(),{30, 1, 1.0, 0.75, 0.75, 0.75});
+	m_lstControl.insert(m_lstControl.end(),{41, 0, 0.67, 0.5, 0.5, 1.0, "WWW.SHAIDIN.COM"});
+	m_lstControl.insert(m_lstControl.end(),{41, 1, 0.67, 0.5, 0.5, 1.0, "ALI ASADPOOR"});
 }
 
 Menu::~Menu()

@@ -33,7 +33,7 @@ void Life::CreateWindow()
 	float fFontX, fFontY;
 	GetFontSize(&fFontX, &fFontY);
 	m_pWnd = SDL_CreateWindow("Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		fFontX * 40, fFontY * 20, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+		fFontX * 60, fFontY * 30, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (!m_pWnd)
 		throw "SDL_CreateWindow";
 }
