@@ -133,7 +133,8 @@ bool Game::Tick()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1 - m_bSwap, m_iBuffers[1]);
 	if (bUpdate)
 	{
-		m_GameUpdate = m_pApp->m_frameTime;
+		if (!m_pApp->m_bRefresh)
+			m_GameUpdate = m_pApp->m_frameTime;
 		glDisable(GL_RASTERIZER_DISCARD);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
