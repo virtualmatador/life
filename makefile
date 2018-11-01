@@ -25,7 +25,7 @@ uninstall:
 		sudo $(RM) /usr/local/sbin/$(TARGET)
 
 define OBJECT_RULE
-build/$(shell $(CC) -MM $(1) | sed ':a;N;s/ \\\n / /g')
+build/$(subst \,,$(shell $(CC) -MM $(1)))
 	mkdir -p build/
 	$$(CC) $(DEBUG) -c -o $$@ $$<
 endef
