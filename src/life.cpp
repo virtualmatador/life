@@ -59,7 +59,7 @@ void Life::GetFontSize(float* pfFontX, float* pfFontY)
 	*pfFontY /= 6.0f;
 }
 
-int Life::Run(int argc, char* argv[])
+int Life::Run()
 {
 	for(;;)
 	{
@@ -304,12 +304,13 @@ void Life::Stop()
 	m_bMenu = true;
 	Refresh();
 }
+
 int main(int argc, char* argv[])
 {
 	try
 	{
 		Life life;
-		life.Run(argc, argv);
+		life.Run();
 	}
 	catch(const char* szE)
 	{

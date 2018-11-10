@@ -32,7 +32,7 @@ public:
 	Life();
 	~Life();
 	void GetFontSize(float* pfFontX, float* pfFontY);
-	int Run(int argc, char* argv[]);
+	int Run();
 
 	void ToggleGame();
 	void ToggleMenu();
