@@ -4,6 +4,8 @@
 Life::Life()
 	: m_pGame{nullptr}
 	, m_pMenu{nullptr}
+	, m_pNormal{nullptr}
+	, m_pEdit{nullptr}
 	, m_pWnd{nullptr}
 	, m_bEdit{false}
 	, m_bFrame{false}
@@ -16,11 +18,23 @@ Life::Life()
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw "SDL_INIT";
+	m_pNormal = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	m_pEdit = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
 	CreateWindow();
 	if (!(m_pMenu = new Menu(this)))
 		throw "SDL_GL_CreateContext";
 	if (!(m_pGame = new Game(this)))
 		throw "SDL_GL_CreateContext";
+}
+
+Life::~Life()
+{
+	delete m_pGame;
+	delete m_pMenu;
+	SDL_DestroyWindow(m_pWnd);
+	SDL_FreeCursor(m_pNormal);
+	SDL_FreeCursor(m_pEdit);
+	SDL_Quit();
 }
 
 void Life::CreateWindow()
@@ -38,15 +52,6 @@ void Life::CreateWindow()
 		throw "SDL_CreateWindow";
 }
 
-
-Life::~Life()
-{
-	delete m_pGame;
-	delete m_pMenu;
-	SDL_DestroyWindow(m_pWnd);
-	SDL_Quit();
-}
-
 void Life::GetFontSize(float* pfFontX, float* pfFontY)
 {
 	int iDisplay  = (m_pWnd ? SDL_GetWindowDisplayIndex(m_pWnd) : 0);
@@ -59,7 +64,7 @@ void Life::GetFontSize(float* pfFontX, float* pfFontY)
 	*pfFontY /= 6.0f;
 }
 
-int Life::Run()
+void Life::Run()
 {
 	for(;;)
 	{
@@ -82,7 +87,6 @@ int Life::Run()
 		if (iEvent == 1 && HandleEvent(&event) < 0)
 			break;
 	}
-	return 0;
 }
 
 int Life::HandleEvent(SDL_Event* pEvent)
@@ -173,9 +177,9 @@ void Life::OnMove()
 void Life::Refresh()
 {
 	if (m_bEdit)
-		SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR));
+		SDL_SetCursor(m_pEdit);
 	else
-		SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
+		SDL_SetCursor(m_pNormal);
 	m_bRefresh = true;
 	Tick();
 	m_bRefresh = false;

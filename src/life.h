@@ -15,6 +15,8 @@ class Life
 private:
 	Menu* m_pMenu;
 	Game* m_pGame;
+	SDL_Cursor* m_pNormal;
+	SDL_Cursor* m_pEdit;
 
 public:
 	SDL_Window* m_pWnd;
@@ -32,7 +34,7 @@ public:
 	Life();
 	~Life();
 	void GetFontSize(float* pfFontX, float* pfFontY);
-	int Run();
+	void Run();
 
 	void ToggleGame();
 	void ToggleMenu();
