@@ -83,11 +83,21 @@ Context<T>::Context(Life* pApp)
 	if (Result != GL_TRUE)
 		throw "glLinkProgram";
 
-	glDetachShader(m_iProgram, VertexShaderID);
-	glDetachShader(m_iProgram, FragmentShaderID);
-	
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
+	if (VertexShaderID)
+	{
+		glDetachShader(m_iProgram, VertexShaderID);
+		glDeleteShader(VertexShaderID);
+	}
+	if (GeometryShaderID)
+    {
+		glDetachShader(m_iProgram, GeometryShaderID);
+	    glDeleteShader(GeometryShaderID);
+	}
+	if (FragmentShaderID)
+	{
+	    glDetachShader(m_iProgram, FragmentShaderID);
+    	glDeleteShader(FragmentShaderID);
+	}
 
 	glUseProgram(m_iProgram);
 }
