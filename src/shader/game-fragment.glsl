@@ -1,4 +1,4 @@
-#version 450
+#version 430
 
 flat in vec4 color;
 

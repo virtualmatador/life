@@ -104,15 +104,12 @@ SDL_Window* Menu::GetWindow()
 
 void Menu::SetFontScale()
 {
-	int iWidth, iHeight;
-	SDL_GetWindowSize(GetWindow(), &iWidth, &iHeight);
 	float fFontX, fFontY;
 	m_pApp->GetFontSize(&fFontX, &fFontY);
-	m_fScaleX = fFontX * 2.0f / iWidth;
-	m_fScaleY = fFontY * 2.0f / iHeight;
+	m_fScaleX = fFontX * 2.0f / m_pApp->m_rcClient.w;
+	m_fScaleY = fFontY * 2.0f / m_pApp->m_rcClient.h;
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glLineWidth(std::min(fFontX, fFontY) / 8);
-
 }
 
 void Menu::UploadTexts()

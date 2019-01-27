@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 class Life;
 
@@ -30,6 +30,9 @@ Context<T>::Context(Life* pApp)
 	if (!m_pContext)
 		throw "SDL_GL_CreateContext";
 
+	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
+	glewInit();
+
 	m_iProgram = glCreateProgram();
 	if (m_iProgram == 0)
 		throw "glCreateProgram";
@@ -46,7 +49,7 @@ Context<T>::Context(Life* pApp)
 		glCompileShader(VertexShaderID);
 		glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 		if (Result != GL_TRUE)
-			throw "glCompileShader";
+			throw "glCompileShader GL_VERTEX_SHADER";
 		glAttachShader(m_iProgram, VertexShaderID);
 	}
 
@@ -60,7 +63,7 @@ Context<T>::Context(Life* pApp)
 		glCompileShader(GeometryShaderID);
 		glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
 		if (Result != GL_TRUE)
-			throw "glCompileShader";
+			throw "glCompileShader GL_GEOMETRY_SHADER";
 		glAttachShader(m_iProgram, GeometryShaderID);
 	}
 
@@ -74,7 +77,7 @@ Context<T>::Context(Life* pApp)
 		glCompileShader(FragmentShaderID);
 		glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
 		if (Result != GL_TRUE)
-			throw "glCompileShader";
+			throw "glCompileShader GL_FRAGMENT_SHADER";
 		glAttachShader(m_iProgram, FragmentShaderID);
 	}
 
@@ -111,8 +114,7 @@ Context<T>::~Context()
 template<typename T>
 void Context<T>::SetWindowSize()
 {
-	int iWidth, iHeight;
-	SDL_GetWindowSize(((T*)this)->GetWindow(), &iWidth, &iHeight);
 	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
-	glViewport(0, 0, iWidth, iHeight);
+	SDL_Rect & rc = ((T*)this)->m_pApp->m_rcClient;
+	glViewport(rc.x, rc.y, rc.w, rc.h);
 }

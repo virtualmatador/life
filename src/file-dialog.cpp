@@ -3,22 +3,36 @@
 
 std::string GetOpenFileName(bool bSave)
 {
-	std::string sName;
+	const char* szCommand;
 #ifdef __linux__
-	char file[1024];
-	FILE *f;
 	if (bSave)
-		f = popen("zenity --file-selection --save 2> /dev/null", "r");
+		szCommand = "zenity --file-selection --save 2> /dev/null";
 	else
-		f = popen("zenity --file-selection 2> /dev/null", "r");
- 	fgets(file, 1024, f);
-	pclose(f);
-	file[strlen(file) - 1] = 0;
-	sName = std::string(file);
+		szCommand = "zenity --file-selection 2> /dev/null";
 #endif
 #ifdef __APPLE__
+	if (bSave)
+		szCommand = "";
+	else
+		szCommand = "";
 #endif
-#ifdef __WINDOWS__
+#ifdef __MINGW32__
+	if (bSave)
+		szCommand = "cmd.exe /V:ON /C \"set /p file= && echo !file!\"";
+	else
+		szCommand = "cmd.exe /V:ON /C \"set /p file= && echo !file!\"";
 #endif
-	return sName;
+	char szFile[1024];
+	szFile[0] = '\0';
+	FILE *fPipe;
+	fPipe = popen(szCommand, "r");
+	if (fPipe)
+	{
+		fgets(szFile, 1024, fPipe);
+		pclose(fPipe);
+	}
+	int iLength = strlen(szFile);
+	if (iLength > 0)
+		szFile[iLength - 1] = 0;
+	return std::string(szFile);
 }

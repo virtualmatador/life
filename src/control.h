@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include <sstream>
 #include <string>

@@ -5,7 +5,7 @@
 
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include <chrono>
 #include <string>
@@ -20,6 +20,7 @@ private:
 
 public:
 	SDL_Window* m_pWnd;
+	SDL_Rect m_rcClient;
 	bool m_bEdit;
 	bool m_bFrame;
 	bool m_bRun;
@@ -47,8 +48,9 @@ public:
 	void Stop();
 
 private:
-	void CreateWindow();
+	void CreateWnd();
 	int HandleEvent(SDL_Event* pEvent);
+	void UpdateClientRect();
 	void OnResize();
 	void OnMove();
 	void Refresh();

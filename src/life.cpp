@@ -7,6 +7,7 @@ Life::Life()
 	, m_pNormal{nullptr}
 	, m_pEdit{nullptr}
 	, m_pWnd{nullptr}
+	, m_rcClient{0, 0, 0, 0}
 	, m_bEdit{false}
 	, m_bFrame{false}
 	, m_bRun{false}
@@ -20,11 +21,12 @@ Life::Life()
 		throw "SDL_INIT";
 	m_pNormal = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 	m_pEdit = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
-	CreateWindow();
+	CreateWnd();
 	if (!(m_pMenu = new Menu(this)))
 		throw "SDL_GL_CreateContext";
 	if (!(m_pGame = new Game(this)))
 		throw "SDL_GL_CreateContext";
+	OnResize();
 }
 
 Life::~Life()
@@ -37,10 +39,10 @@ Life::~Life()
 	SDL_Quit();
 }
 
-void Life::CreateWindow()
+void Life::CreateWnd()
 {
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0 ||
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5) < 0 ||
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0 ||
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
 		throw "SDL_GL_SetAttribute";
@@ -158,8 +160,18 @@ int Life::HandleEvent(SDL_Event* pEvent)
 	return 0;
 }
 
+void Life::UpdateClientRect()
+{
+	int iRight, iTop;
+	SDL_GetWindowBordersSize(m_pWnd, &iTop, &m_rcClient.x, &m_rcClient.y, &iRight);
+	SDL_GetWindowSize(m_pWnd, &m_rcClient.w, &m_rcClient.h);
+	m_rcClient.h -= iTop + m_rcClient.y;
+	m_rcClient.w -= m_rcClient.x + iRight;
+}
+
 void Life::OnResize()
 {
+	UpdateClientRect();
 	m_pMenu->SetWindowSize();
 	m_pMenu->SetFontScale();
 	m_pGame->SetWindowSize();
@@ -196,10 +208,8 @@ void Life::Tick()
 
 void Life::Click(int iX, int iY)
 {
-	int iWidth, iHeight;
-	SDL_GetWindowSize(m_pWnd, &iWidth, & iHeight);	
-	float fX = float(iX * 2) / float(iWidth) - 1;
-	float fY = float(-iY * 2) / float(iHeight) + 1;
+	float fX = float(iX * 2) / float(m_rcClient.w) - 1;
+	float fY = float(-iY * 2) / float(m_rcClient.h) + 1;
 	if (m_bEdit)
 	{
 		m_pGame->Edit(fX, fY);

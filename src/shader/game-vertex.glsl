@@ -1,4 +1,4 @@
-#version 450
+#version 430
 
 uniform int width;
 uniform int height;
