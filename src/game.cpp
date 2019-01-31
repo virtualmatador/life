@@ -106,7 +106,7 @@ bool Game::Save()
 std::string Game::GetFileName(bool bSave)
 {
 	SDL_HideWindow(m_pApp->m_pWnd);
-	std::string sName = GetOpenFileName(bSave);
+	std::string sName = ShowFileDialog(bSave);
 	SDL_ShowWindow(m_pApp->m_pWnd);
 	return sName;
 }

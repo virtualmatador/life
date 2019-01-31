@@ -16,7 +16,7 @@ TARGET_WINDOWS := $(BIN_WINDOWS)/Life.exe
 BUILD_WINDOWS := build_windows
 OBJECTS_WINDOWS := $(patsubst src/%.cpp, $(BUILD_WINDOWS)/%.o, $(SOURCES))
 CC_WINDOWS := x86_64-w64-mingw32-g++
-LIBS_WINDOWS := -lmingw32 -static-libstdc++ -static-libgcc -lopengl32 -lglew32 $(LIBS)
+LIBS_WINDOWS := -lmingw32 -static-libstdc++ -static-libgcc -lopengl32 -lglew32 -lcomdlg32 $(LIBS)
 
 .PHONY: clean
 

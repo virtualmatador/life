@@ -1,14 +1,28 @@
 #include "file-dialog.h"
 #include <cstring>
 
-std::string GetOpenFileName(bool bSave)
+#ifdef __MINGW32__
+#include <windows.h>
+#endif
+std::string ShowFileDialog(bool bSave)
 {
-	const char* szCommand;
+	char szFile[1024] = "";
 #ifdef __linux__
+	const char* szCommand;
 	if (bSave)
 		szCommand = "zenity --file-selection --save 2> /dev/null";
 	else
 		szCommand = "zenity --file-selection 2> /dev/null";
+	FILE *fPipe;
+	fPipe = popen(szCommand, "r");
+	if (fPipe)
+	{
+		fgets(szFile, sizeof(szFile), fPipe);
+		pclose(fPipe);
+	}
+	int iLength = strlen(szFile);
+	if (iLength > 0)
+		szFile[iLength - 1] = 0;
 #endif
 #ifdef __APPLE__
 	if (bSave)
@@ -17,22 +31,22 @@ std::string GetOpenFileName(bool bSave)
 		szCommand = "";
 #endif
 #ifdef __MINGW32__
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize  = sizeof(ofn);
+	ofn.hwndOwner    = NULL;
+	ofn.lpstrFilter  = "Image Files\0*.pbm\0All Files\0*.*\0\0";
+	ofn.lpstrFile    = szFile;
+	ofn.nMaxFile     = sizeof(szFile);
+	ofn.lpstrTitle   = "Select an image";
 	if (bSave)
-		szCommand = "cmd.exe /V:ON /C \"set /p file= && echo !file!\"";
+		ofn.Flags    = OFN_HIDEREADONLY;
 	else
-		szCommand = "cmd.exe /V:ON /C \"set /p file= && echo !file!\"";
+		ofn.Flags    = OFN_FILEMUSTEXIST;
+
+	if (!GetOpenFileNameA(&ofn))
+		szFile[0] = '\0';
 #endif
-	char szFile[1024];
-	szFile[0] = '\0';
-	FILE *fPipe;
-	fPipe = popen(szCommand, "r");
-	if (fPipe)
-	{
-		fgets(szFile, 1024, fPipe);
-		pclose(fPipe);
-	}
-	int iLength = strlen(szFile);
-	if (iLength > 0)
-		szFile[iLength - 1] = 0;
-	return std::string(szFile);
+
+	return szFile;
 }

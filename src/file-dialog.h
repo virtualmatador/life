@@ -2,4 +2,4 @@
 
 #include <string>
 
-std::string GetOpenFileName(bool bSave);
+std::string ShowFileDialog(bool bSave);
