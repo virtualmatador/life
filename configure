@@ -4,6 +4,8 @@ echo "Life configuring ..."
 
 PREREQUESTIES=( \
     "make" \
+    "zip" \
+    "unzip" \
     "g++" \
     "mingw-w64" \
     "libsdl2-dev" \
