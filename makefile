@@ -18,7 +18,7 @@ OBJECTS_WINDOWS := $(patsubst src/%.cpp, $(BUILD_WINDOWS)/%.o, $(SOURCES))
 CC_WINDOWS := x86_64-w64-mingw32-g++
 LIBS_WINDOWS := -lmingw32 -static-libstdc++ -static-libgcc -lopengl32 -lglew32 -lcomdlg32 $(LIBS)
 
-.PHONY: clean
+.PHONY: clean, install, uninstall
 
 all: $(TARGET_LINUX) $(TARGET_WINDOWS)
 
@@ -44,3 +44,20 @@ clean:
 	$(RM) -r $(BIN_LINUX)/
 	$(RM) -r $(BUILD_WINDOWS)/
 	$(RM) -r $(BIN_WINDOWS)/
+
+install:
+	@echo "life installing ..."
+	sudo mkdir -p /var/wwz/www.shaidin.com/html/life/
+	rm -f bin_linux/life.zip
+	cd bin_linux && zip life.zip life && cd ..
+	sudo cp bin_linux/life.zip /var/wwz/www.shaidin.com/html/life/
+	rm -f bin_windows/Life.exe.zip
+	cd bin_windows && zip Life.exe.zip Life.exe && cd ..
+	sudo cp bin_windows/Life.exe.zip /var/wwz/www.shaidin.com/html/life/
+	@echo "life installed."
+
+uninstall:
+	@echo "life uninstalling ..."
+	sudo rm -f /var/wwz/www.shaidin.com/html/life/life.zip
+	sudo rm -f /var/wwz/www.shaidin.com/html/life/Life.exe.zip
+	@echo "life uninstalled."
