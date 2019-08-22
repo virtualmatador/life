@@ -106,8 +106,8 @@ void Menu::SetFontScale()
 {
 	float fFontX, fFontY;
 	m_pApp->GetFontSize(&fFontX, &fFontY);
-	m_fScaleX = fFontX * 2.0f / m_pApp->m_rcClient.w;
-	m_fScaleY = fFontY * 2.0f / m_pApp->m_rcClient.h;
+	m_fScaleX = fFontX * 2.0f / m_pApp->m_ptClient.x;
+	m_fScaleY = fFontY * 2.0f / m_pApp->m_ptClient.y;
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
 	glLineWidth(std::min(fFontX, fFontY) / 8);
 }

@@ -114,7 +114,7 @@ std::string Game::GetFileName(bool bSave)
 void Game::SetPointSize()
 {
 	SDL_GL_MakeCurrent(m_pApp->m_pWnd, m_pContext);
-	glPointSize(std::min(0.75 * m_pApp->m_rcClient.w / m_iCx, 0.75 * m_pApp->m_rcClient.w / m_iCy));
+	glPointSize(std::min(0.8 * m_pApp->m_ptClient.x / m_iCx, 0.8 * m_pApp->m_ptClient.y / m_iCy));
 }
 
 bool Game::Tick()

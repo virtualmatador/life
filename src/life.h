@@ -20,7 +20,7 @@ private:
 
 public:
 	SDL_Window* m_pWnd;
-	SDL_Rect m_rcClient;
+	SDL_Point m_ptClient;
 	bool m_bEdit;
 	bool m_bFrame;
 	bool m_bRun;
@@ -50,7 +50,6 @@ public:
 private:
 	void CreateWnd();
 	int HandleEvent(SDL_Event* pEvent);
-	void UpdateClientRect();
 	void OnResize();
 	void OnMove();
 	void Refresh();

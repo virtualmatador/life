@@ -7,7 +7,7 @@ Life::Life()
 	, m_pNormal{nullptr}
 	, m_pEdit{nullptr}
 	, m_pWnd{nullptr}
-	, m_rcClient{0, 0, 0, 0}
+	, m_ptClient{0, 0}
 	, m_bEdit{false}
 	, m_bFrame{false}
 	, m_bRun{false}
@@ -160,18 +160,9 @@ int Life::HandleEvent(SDL_Event* pEvent)
 	return 0;
 }
 
-void Life::UpdateClientRect()
-{
-	int iRight, iTop;
-	SDL_GetWindowBordersSize(m_pWnd, &iTop, &m_rcClient.x, &m_rcClient.y, &iRight);
-	SDL_GetWindowSize(m_pWnd, &m_rcClient.w, &m_rcClient.h);
-	m_rcClient.h -= iTop + m_rcClient.y;
-	m_rcClient.w -= m_rcClient.x + iRight;
-}
-
 void Life::OnResize()
 {
-	UpdateClientRect();
+	SDL_GetWindowSize(m_pWnd, &m_ptClient.x, &m_ptClient.y);
 	m_pMenu->SetWindowSize();
 	m_pMenu->SetFontScale();
 	m_pGame->SetWindowSize();
@@ -208,8 +199,8 @@ void Life::Tick()
 
 void Life::Click(int iX, int iY)
 {
-	float fX = float(iX * 2) / float(m_rcClient.w) - 1;
-	float fY = float(-iY * 2) / float(m_rcClient.h) + 1;
+	float fX = float(iX * 2) / float(m_ptClient.x) - 1;
+	float fY = float(-iY * 2) / float(m_ptClient.y) + 1;
 	if (m_bEdit)
 	{
 		m_pGame->Edit(fX, fY);

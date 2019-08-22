@@ -115,6 +115,5 @@ template<typename T>
 void Context<T>::SetWindowSize()
 {
 	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
-	SDL_Rect & rc = ((T*)this)->m_pApp->m_rcClient;
-	glViewport(rc.x, rc.y, rc.w, rc.h);
+	glViewport(0, 0, ((T*)this)->m_pApp->m_ptClient.x, ((T*)this)->m_pApp->m_ptClient.y);
 }
