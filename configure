@@ -2,70 +2,31 @@
 
 echo "Life configuring ..."
 
-PREREQUESTIES=( \
-    "make" \
-    "zip" \
-    "unzip" \
-    "g++" \
-    "mingw-w64" \
-    "libsdl2-dev" \
-    "libglew-dev" \
-)
-DOWNLOADS=( \
-    "https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz" \
-    "http://www.grhmedia.com/glew/glew-2.1.0-mingw-w64.zip" \
-)
-PATHES=( \
-    "SDL2-2.0.9/x86_64-w64-mingw32/" \
-    "glew-2.1.0/" \
-)
+packages=\
+"
+    zip
+    unzip
+    g++
+    mingw-w64
+    libsdl2-dev
+    libglew-dev
+"
+libs=\
+"
+    https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz
+    SDL2-2.0.10/x86_64-w64-mingw32
+    x86_64-w64-mingw32
 
-for ((i = 0; i < ${#PREREQUESTIES[@]}; ++i))
-do
-    if [ "$(dpkg -l | grep '^ii' | awk '{print $2}' | grep "^${PREREQUESTIES[i]}\(:\|$\)")" == "" ]
-    then
-        if ! sudo apt -y -qq install ${PREREQUESTIES[i]}
-        then
-            echo "Failed to install ${PREREQUESTIES[i]}."
-            exit -1
-        fi
-    fi
-done
-
-mkdir -p deps
-cd deps
-for ((i = 0; i < ${#DOWNLOADS[@]}; ++i))
-do
-    FileName=$(basename "${DOWNLOADS[i]}")
-    if [ ! -f ${FileName} ]
-    then
-        if ! wget ${DOWNLOADS[i]}
-        then
-            echo "Failed to download ${DOWNLOADS[i]}."
-            exit -1
-        fi
-        if [ $(echo ${FileName: -4} | tr '[:upper:]' '[:lower:]') == ".zip" ]
-        then
-            if ! unzip ${FileName}
-            then
-                echo "Failed to unzip ${FileName}."
-                exit -1
-            fi
-        elif [ $(echo ${FileName: -7} | tr '[:upper:]' '[:lower:]') == ".tar.gz" ]
-        then
-            if ! tar -xvzf ${FileName}
-            then
-                echo "Failed to unzip ${FileName}."
-                exit -1
-            fi
-        else
-            echo "Unknown file type ${FileName}."
-            exit -1
-        fi
-        sudo cp -r ${PATHES[i]}/lib/ /usr/x86_64-w64-mingw32/
-        sudo cp -r ${PATHES[i]}/include/ /usr/x86_64-w64-mingw32/
-    fi
-done
-cd ..
+    http://www.grhmedia.com/glew/glew-2.1.0-mingw-w64.zip
+    glew-2.1.0
+    x86_64-w64-mingw32
+"
+cd prerequisite/
+if ! ./configure.sh "${packages}" "${libs}"
+then
+    echo "Life configuration failed."
+    exit -1
+fi
+cd ../
 
 echo "Life configured."
