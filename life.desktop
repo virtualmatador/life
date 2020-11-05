@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Life
+Exec=life
+Icon=life
+Type=Application
+Categories=Utility
+Terminal=false

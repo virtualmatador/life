@@ -1,10 +1,11 @@
-#include "game.h"
-#include "life.h"
-
-#include "file-dialog.h"
-
+#include <cstring>
 #include <fstream>
 #include <vector>
+
+#include "file-dialog.h"
+#include "life.h"
+
+#include "game.h"
 
 Game::Game(Life* pApp)
 	: Context<Game>{pApp}
@@ -45,7 +46,7 @@ bool Game::Load()
 	if (!img)
 		return false;
 	img >> sign[0] >> sign[1];
-	if (strcmp(sign, "P1") != 0)
+	if (std::strcmp(sign, "P1") != 0)
 		return false;
 	int iWidth, iHeight;
 	if (!img)
@@ -184,30 +185,30 @@ bool Game::HasData()
 
 const char* Game::GetVertexStart()
 {
-	return _binary_src_shader_game_vertex_glsl_start;
+	return _binary_game_vertex_glsl_start;
 }
 
 const char* Game::GetVertexEnd()
 {
-	return _binary_src_shader_game_vertex_glsl_end;
+	return _binary_game_vertex_glsl_end;
 }
 
 const char* Game::GetGeometryStart()
 {
-	return _binary_src_shader_game_geometry_glsl_start;
+	return _binary_game_geometry_glsl_start;
 }
 
 const char* Game::GetGeometryEnd()
 {
-	return _binary_src_shader_game_geometry_glsl_end;
+	return _binary_game_geometry_glsl_end;
 }
 
 const char* Game::GetFragmentStart()
 {
-	return _binary_src_shader_game_fragment_glsl_start;
+	return _binary_game_fragment_glsl_start;
 }
 
 const char* Game::GetFragmentEnd()
 {
-	return _binary_src_shader_game_fragment_glsl_end;
+	return _binary_game_fragment_glsl_end;
 }

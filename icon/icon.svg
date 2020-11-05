@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024"
+   height="1024"
+   viewBox="0 0 270.93333 270.93334"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="icon.svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2829">
+      <stop
+         style="stop-color:#5364ee;stop-opacity:1"
+         offset="0"
+         id="stop2825" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop2827" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2829"
+       id="linearGradient2833"
+       x1="499.63086"
+       y1="1029.6016"
+       x2="499.63086"
+       y2="254.36615"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.26458333,0,0,0.26458333,0,-33.044994)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="351.00315"
+     inkscape:cy="599.34354"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:pagecheckerboard="true"
+     showborder="true"
+     inkscape:showpageshadow="false"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path42"
+       style="fill:url(#linearGradient2833);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.52916667;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 132.194,33.998969 A 178.86309,24.758824 0 0 0 0.13229166,42.096666 v 33.322469 a 178.86309,24.758824 0 0 0 0.003101,5.3e-4 V 237.75277 H 270.79794 V 74.448138 a 178.86309,24.758824 0 0 0 0.003,-5.3e-4 V 43.068174 a 178.86309,24.758824 0 0 0 -138.36416,-9.069216 178.86309,24.758824 0 0 0 -0.24288,0 z" />
+    <g
+       id="g2972"
+       transform="matrix(1.0017872,0,0,0.67990263,28.892717,30.012146)">
+      <ellipse
+         style="fill:#5364ee;fill-opacity:1;stroke:#2e242d;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path2890-2-7-0"
+         cx="142.62144"
+         cy="97.546448"
+         rx="15.490337"
+         ry="15.699909" />
+      <ellipse
+         style="fill:#5364ee;fill-opacity:1;stroke:#2e242d;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path2890-2-7-0-9"
+         cx="106.38377"
+         cy="65.464783"
+         rx="15.490337"
+         ry="15.699909" />
+      <ellipse
+         style="fill:#5364ee;fill-opacity:1;stroke:#2e242d;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path2890"
+         cx="70.146095"
+         cy="132.15056"
+         rx="15.490338"
+         ry="15.699909" />
+      <ellipse
+         style="fill:#5364ee;fill-opacity:1;stroke:#2e242d;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path2890-2"
+         cx="106.38377"
+         cy="132.15056"
+         rx="15.490337"
+         ry="15.699909" />
+      <ellipse
+         style="fill:#5364ee;fill-opacity:1;stroke:#2e242d;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path2890-2-7"
+         cx="142.62144"
+         cy="132.15056"
+         rx="15.490337"
+         ry="15.699909" />
+    </g>
+  </g>
+</svg>

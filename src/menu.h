@@ -7,14 +7,14 @@
 #include <list>
 #include <chrono>
 
-extern const char _binary_src_shader_menu_vertex_glsl_end[];
-extern const char _binary_src_shader_menu_vertex_glsl_start[];
+extern const char _binary_menu_vertex_glsl_end[];
+extern const char _binary_menu_vertex_glsl_start[];
 
-extern const char _binary_src_shader_menu_geometry_glsl_end[];
-extern const char _binary_src_shader_menu_geometry_glsl_start[];
+extern const char _binary_menu_geometry_glsl_end[];
+extern const char _binary_menu_geometry_glsl_start[];
 
-extern const char _binary_src_shader_menu_fragment_glsl_end[];
-extern const char _binary_src_shader_menu_fragment_glsl_start[];
+extern const char _binary_menu_fragment_glsl_end[];
+extern const char _binary_menu_fragment_glsl_start[];
 
 extern const float arFont[64][8][2];
 

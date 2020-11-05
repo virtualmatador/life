@@ -6,14 +6,14 @@
 #include <chrono>
 #include <vector>
 
-extern const char _binary_src_shader_game_vertex_glsl_end[];
-extern const char _binary_src_shader_game_vertex_glsl_start[];
+extern const char _binary_game_vertex_glsl_end[];
+extern const char _binary_game_vertex_glsl_start[];
 
-extern const char _binary_src_shader_game_geometry_glsl_end[];
-extern const char _binary_src_shader_game_geometry_glsl_start[];
+extern const char _binary_game_geometry_glsl_end[];
+extern const char _binary_game_geometry_glsl_start[];
 
-extern const char _binary_src_shader_game_fragment_glsl_end[];
-extern const char _binary_src_shader_game_fragment_glsl_start[];
+extern const char _binary_game_fragment_glsl_end[];
+extern const char _binary_game_fragment_glsl_start[];
 
 class Game: public Context<Game>
 {
