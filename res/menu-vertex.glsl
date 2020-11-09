@@ -1,9 +1,9 @@
 #version 430
 
-in vec2 v_xy;
-in vec2 v_scale;
-in int v_character;
-in vec3 v_color;
+layout(location = 0) in vec2 v_xy;
+layout(location = 1) in vec2 v_scale;
+layout(location = 2) in int v_character;
+layout(location = 3) in vec3 v_color;
 
 out vec2 g_scale;
 out int g_character;
