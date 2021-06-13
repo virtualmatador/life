@@ -1,5 +1,7 @@
-#include "life.h"
+#include <cstring>
 #include <iostream>
+
+#include "life.h"
 
 Life::Life()
 	: m_pGame{nullptr}
@@ -312,15 +314,31 @@ void Life::Stop()
 
 int main(int argc, char* argv[])
 {
-	try
-	{
-		Life life;
-		life.Run();
+    if (argc > 1)
+    {
+        if (argc == 2 && std::strcmp("--version", argv[1]) == 0)
+        {
+            std::cout << "Life: " << PROJECT_VERSION << std::endl;
+            return 0;
+        }
+		else
+		{
+	        std::cerr << "Unknown option" << std::endl;
+			return -1;
+		}
+    }
+    else
+    {
+		try
+		{
+			Life life;
+			life.Run();
+		}
+		catch(const char* szE)
+		{
+			std::cout << "Exception: " << szE << std::endl;
+			return -1;
+		}
+		return 0;
 	}
-	catch(const char* szE)
-	{
-		std::cout << "Exception: " << szE << std::endl;
-		return -1;
-	}
-	return 0;
 }
