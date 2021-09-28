@@ -1,7 +1,7 @@
 #include "file-dialog.h"
 #include <cstring>
 
-#ifdef __MINGW32__
+#ifdef _WIN64
 #include <windows.h>
 #endif
 std::string ShowFileDialog(bool bSave)
@@ -30,7 +30,7 @@ std::string ShowFileDialog(bool bSave)
 	else
 		szCommand = "";
 #endif
-#ifdef __MINGW32__
+#ifdef _WIN64
 	OPENFILENAME ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
 	ofn.lStructSize  = sizeof(ofn);

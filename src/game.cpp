@@ -5,6 +5,8 @@
 #include "file-dialog.h"
 #include "life.h"
 
+#include <resources.h>
+
 #include "game.h"
 
 Game::Game(Life* pApp)
@@ -185,30 +187,30 @@ bool Game::HasData()
 
 const char* Game::GetVertexStart()
 {
-	return _binary_game_vertex_glsl_start;
+	return (const char*)game_vertex_glsl;
 }
 
-const char* Game::GetVertexEnd()
+std::size_t Game::GetVertexSize()
 {
-	return _binary_game_vertex_glsl_end;
+	return game_vertex_glsl_size;
 }
 
 const char* Game::GetGeometryStart()
 {
-	return _binary_game_geometry_glsl_start;
+	return (const char*)game_geometry_glsl;
 }
 
-const char* Game::GetGeometryEnd()
+std::size_t Game::GetGeometrySize()
 {
-	return _binary_game_geometry_glsl_end;
+	return game_geometry_glsl_size;
 }
 
 const char* Game::GetFragmentStart()
 {
-	return _binary_game_fragment_glsl_start;
+	return (const char*)game_fragment_glsl;
 }
 
-const char* Game::GetFragmentEnd()
+std::size_t Game::GetFragmentSize()
 {
-	return _binary_game_fragment_glsl_end;
+	return game_fragment_glsl_size;
 }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SRC_CONTEXT_HPP
+#define SRC_CONTEXT_HPP
 
 #include <SDL2/SDL.h>
 #define GL_GLEXT_PROTOTYPES
@@ -39,8 +40,8 @@ Context<T>::Context(Life* pApp)
 
 	GLint Result = GL_FALSE;
 
-	char const * VertexSourcePointer = ((T*)this)->GetVertexStart();
-	GLint VertexSourceLength = ((T*)this)->GetVertexEnd() - VertexSourcePointer;
+	auto VertexSourcePointer = ((T*)this)->GetVertexStart();
+	GLint VertexSourceLength = ((T*)this)->GetVertexSize();
 	GLuint VertexShaderID = 0;
 	if (VertexSourceLength > 0)
 	{
@@ -53,8 +54,8 @@ Context<T>::Context(Life* pApp)
 		glAttachShader(m_iProgram, VertexShaderID);
 	}
 
-	char const * GeometrySourcePointer = ((T*)this)->GetGeometryStart();
-	GLint GeometrySourceLength = ((T*)this)->GetGeometryEnd() - GeometrySourcePointer;
+	auto GeometrySourcePointer = ((T*)this)->GetGeometryStart();
+	GLint GeometrySourceLength = ((T*)this)->GetGeometrySize();
 	GLuint GeometryShaderID = 0;
 	if (GeometrySourceLength > 0)
 	{
@@ -67,8 +68,8 @@ Context<T>::Context(Life* pApp)
 		glAttachShader(m_iProgram, GeometryShaderID);
 	}
 
-	char const * FragmentSourcePointer = ((T*)this)->GetFragmentStart();
-	GLint FragmentSourceLength = ((T*)this)->GetFragmentEnd() - FragmentSourcePointer;
+	auto FragmentSourcePointer = ((T*)this)->GetFragmentStart();
+	GLint FragmentSourceLength = ((T*)this)->GetFragmentSize();
 	GLuint FragmentShaderID = 0;
 	if (FragmentSourceLength > 0)
 	{
@@ -117,3 +118,5 @@ void Context<T>::SetWindowSize()
 	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
 	glViewport(0, 0, ((T*)this)->m_pApp->m_ptClient.x, ((T*)this)->m_pApp->m_ptClient.y);
 }
+
+#endif // SRC_CONTEXT_HPP

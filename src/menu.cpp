@@ -1,9 +1,12 @@
-#include "menu.h"
-#include "life.h"
-
 #include <sstream>
 #include <iomanip>
 #include <vector>
+
+#include <resources.h>
+
+#include "life.h"
+
+#include "menu.h"
 
 Menu::Menu(Life* pApp)
 	: Context<Menu>{pApp}
@@ -174,30 +177,30 @@ void Menu::HitTest(float fX, float fY)
 
 const char* Menu::GetVertexStart()
 {
-	return _binary_menu_vertex_glsl_start;
+	return (const char*)menu_vertex_glsl;
 }
 
-const char* Menu::GetVertexEnd()
+std::size_t Menu::GetVertexSize()
 {
-	return _binary_menu_vertex_glsl_end;
+	return menu_vertex_glsl_size;
 }
 
 const char* Menu::GetGeometryStart()
 {
-	return _binary_menu_geometry_glsl_start;
+	return (const char*)menu_geometry_glsl;
 }
 
-const char* Menu::GetGeometryEnd()
+std::size_t Menu::GetGeometrySize()
 {
-	return _binary_menu_geometry_glsl_end;
+	return menu_geometry_glsl_size;
 }
 
 const char* Menu::GetFragmentStart()
 {
-	return _binary_menu_fragment_glsl_start;
+	return (const char*)menu_fragment_glsl;
 }
 
-const char* Menu::GetFragmentEnd()
+std::size_t Menu::GetFragmentSize()
 {
-	return _binary_menu_fragment_glsl_end;
+	return menu_fragment_glsl_size;
 }

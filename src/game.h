@@ -6,15 +6,6 @@
 #include <chrono>
 #include <vector>
 
-extern const char _binary_game_vertex_glsl_end[];
-extern const char _binary_game_vertex_glsl_start[];
-
-extern const char _binary_game_geometry_glsl_end[];
-extern const char _binary_game_geometry_glsl_start[];
-
-extern const char _binary_game_fragment_glsl_end[];
-extern const char _binary_game_fragment_glsl_start[];
-
 class Game: public Context<Game>
 {
 private:
@@ -41,11 +32,11 @@ public:
 	std::vector<GLint> Download();
 	bool HasData();
 	const char* GetVertexStart();
-	const char* GetVertexEnd();
+	std::size_t GetVertexSize();
 	const char* GetGeometryStart();
-	const char* GetGeometryEnd();
+	std::size_t GetGeometrySize();
 	const char* GetFragmentStart();
-	const char* GetFragmentEnd();
+	std::size_t GetFragmentSize();
 
 private:
 	std::string GetFileName(bool bSave);

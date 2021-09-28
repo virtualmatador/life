@@ -48,11 +48,11 @@ public:
 	bool Tick();
 	void HitTest(float fX, float fY);
 	const char* GetVertexStart();
-	const char* GetVertexEnd();
+	std::size_t GetVertexSize();
 	const char* GetGeometryStart();
-	const char* GetGeometryEnd();
+	std::size_t GetGeometrySize();
 	const char* GetFragmentStart();
-	const char* GetFragmentEnd();
+	std::size_t GetFragmentSize();
 
 private:
 	void RefreshTexts();
