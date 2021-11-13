@@ -32,7 +32,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 add_custom_target("version" ALL
-    COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_PROJECT_VERSION} > "${CMAKE_CURRENT_BINARY_DIR}/version.php"
+    COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_PROJECT_VERSION} > "${CMAKE_CURRENT_BINARY_DIR}/version.txt"
 )
 
 add_subdirectory("res")
