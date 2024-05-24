@@ -1,2 +1,2 @@
-#Conway's Game of Life
-##Based on sdl, openGL
+# Conway's Game of Life
+## Based on sdl, openGL
