@@ -3,7 +3,7 @@
 #include "menu.h"
 #include "game.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glew.h>
 
@@ -13,13 +13,13 @@
 class Life
 {
 private:
-	Menu* m_pMenu;
-	Game* m_pGame;
-	SDL_Cursor* m_pNormal;
-	SDL_Cursor* m_pEdit;
+	Menu *m_pMenu;
+	Game *m_pGame;
+	SDL_Cursor *m_pNormal;
+	SDL_Cursor *m_pEdit;
 
 public:
-	SDL_Window* m_pWnd;
+	SDL_Window *m_pWnd;
 	SDL_Point m_ptClient;
 	bool m_bEdit;
 	bool m_bFrame;
@@ -30,11 +30,10 @@ public:
 	int64_t m_FrameCount;
 	int64_t m_iDelay;
 
-	
 public:
 	Life();
 	~Life();
-	void GetFontSize(float* pfFontX, float* pfFontY);
+	void GetFontSize(float *pfFontX, float *pfFontY);
 	void Run();
 
 	void ToggleGame();
@@ -49,7 +48,7 @@ public:
 
 private:
 	void CreateWnd();
-	int HandleEvent(SDL_Event* pEvent);
+	int HandleEvent(SDL_Event *pEvent);
 	void OnResize();
 	void OnMove();
 	void Refresh();
