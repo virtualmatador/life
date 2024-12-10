@@ -1,7 +1,7 @@
 #ifndef SRC_CONTEXT_HPP
 #define SRC_CONTEXT_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glew.h>
 
@@ -12,26 +12,25 @@ class Context
 {
 protected:
 	SDL_GLContext m_pContext;
-	Life* m_pApp;
+	Life *m_pApp;
 	GLuint m_iProgram;
 
 public:
-	Context(Life* pApp);
+	Context(Life *pApp);
 	~Context();
 
 	void SetWindowSize();
 };
 
-template<typename T>
-Context<T>::Context(Life* pApp)
-	: m_pApp{pApp}
-	, m_iProgram{0}
+template <typename T>
+Context<T>::Context(Life *pApp)
+	: m_pApp{pApp}, m_iProgram{0}
 {
-	m_pContext = SDL_GL_CreateContext(((T*)this)->GetWindow());
+	m_pContext = SDL_GL_CreateContext(((T *)this)->GetWindow());
 	if (!m_pContext)
 		throw "SDL_GL_CreateContext";
 
-	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
+	SDL_GL_MakeCurrent(((T *)this)->GetWindow(), m_pContext);
 	glewInit();
 
 	m_iProgram = glCreateProgram();
@@ -40,8 +39,8 @@ Context<T>::Context(Life* pApp)
 
 	GLint Result = GL_FALSE;
 
-	auto VertexSourcePointer = ((T*)this)->GetVertexStart();
-	GLint VertexSourceLength = ((T*)this)->GetVertexSize();
+	auto VertexSourcePointer = ((T *)this)->GetVertexStart();
+	GLint VertexSourceLength = ((T *)this)->GetVertexSize();
 	GLuint VertexShaderID = 0;
 	if (VertexSourceLength > 0)
 	{
@@ -54,8 +53,8 @@ Context<T>::Context(Life* pApp)
 		glAttachShader(m_iProgram, VertexShaderID);
 	}
 
-	auto GeometrySourcePointer = ((T*)this)->GetGeometryStart();
-	GLint GeometrySourceLength = ((T*)this)->GetGeometrySize();
+	auto GeometrySourcePointer = ((T *)this)->GetGeometryStart();
+	GLint GeometrySourceLength = ((T *)this)->GetGeometrySize();
 	GLuint GeometryShaderID = 0;
 	if (GeometrySourceLength > 0)
 	{
@@ -68,8 +67,8 @@ Context<T>::Context(Life* pApp)
 		glAttachShader(m_iProgram, GeometryShaderID);
 	}
 
-	auto FragmentSourcePointer = ((T*)this)->GetFragmentStart();
-	GLint FragmentSourceLength = ((T*)this)->GetFragmentSize();
+	auto FragmentSourcePointer = ((T *)this)->GetFragmentStart();
+	GLint FragmentSourceLength = ((T *)this)->GetFragmentSize();
 	GLuint FragmentShaderID = 0;
 	if (FragmentSourceLength > 0)
 	{
@@ -93,30 +92,30 @@ Context<T>::Context(Life* pApp)
 		glDeleteShader(VertexShaderID);
 	}
 	if (GeometryShaderID)
-    {
+	{
 		glDetachShader(m_iProgram, GeometryShaderID);
-	    glDeleteShader(GeometryShaderID);
+		glDeleteShader(GeometryShaderID);
 	}
 	if (FragmentShaderID)
 	{
-	    glDetachShader(m_iProgram, FragmentShaderID);
-    	glDeleteShader(FragmentShaderID);
+		glDetachShader(m_iProgram, FragmentShaderID);
+		glDeleteShader(FragmentShaderID);
 	}
 
 	glUseProgram(m_iProgram);
 }
 
-template<typename T>
+template <typename T>
 Context<T>::~Context()
 {
 	SDL_GL_DeleteContext(m_pContext);
 }
 
-template<typename T>
+template <typename T>
 void Context<T>::SetWindowSize()
 {
-	SDL_GL_MakeCurrent(((T*)this)->GetWindow(), m_pContext);
-	glViewport(0, 0, ((T*)this)->m_pApp->m_ptClient.x, ((T*)this)->m_pApp->m_ptClient.y);
+	SDL_GL_MakeCurrent(((T *)this)->GetWindow(), m_pContext);
+	glViewport(0, 0, ((T *)this)->m_pApp->m_ptClient.x, ((T *)this)->m_pApp->m_ptClient.y);
 }
 
 #endif // SRC_CONTEXT_HPP
